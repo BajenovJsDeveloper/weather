@@ -1,0 +1,108 @@
+body{
+      font-size: 16px
+}
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+p{
+  text-align: center
+}
+
+header{
+  text-align: center;
+}
+
+.container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(182, 202, 240,0.7);
+  width: 80%;
+  min-height: 200px;
+  height: 100%;
+  box-shadow: 0 0 20px 10px rgb(176, 179, 179);
+  margin:20px auto;
+  padding:20px;
+  border-radius: 10px;
+}
+
+.container-city{
+  width: 100%;
+  padding:5px 5px 15px 5px;
+  margin-bottom: 20px;
+  color:rgb(104, 104, 104);
+  font-size: 1.6em;
+  border-bottom: 1px solid #1c1c1c1c;
+}
+
+.card-list{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width:100%;
+}
+
+.card{
+  width:150px;
+  margin:2px;
+  border:1px solid rgba(0, 20, 0, 0.3);
+  background-color:white;
+  padding:5px;
+  border-radius:10px;
+}
+
+.card-img{
+  display:block;
+  margin:0 auto;
+
+}
+
+.card-temp-max{
+  font-size: 2em;
+  color:#911b1bcf;
+}
+
+.card-temp-min{
+  font-size: 1em;
+  color:rgba(0, 69, 153, 1);
+  border-top: 1px solid rgba(0, 20, 0, 0.1);
+}
+
+.card-discription{
+  font-size: 1em;
+  color:navy;
+  font-style: italic;
+}
+
+.card-day{
+ font-size: 1.4em;
+  color:tomato;
+  border-bottom: 1px solid rgba(0, 20, 0, 0.1);
+}
+
+.loading{
+  width: 100px;
+  animation-name: spin;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+
+@keyframes spin{
+  100%{
+    transform: rotate(360deg);
+  }
+}
+
+.card-city{
+  font-size: 1.4em;
+  color:tomato;
+  border-bottom: 1px solid rgba(0, 20, 0, 0.1);
+}
