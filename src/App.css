@@ -20,7 +20,7 @@ header{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(182, 202, 240,0.7);
+  background-color: rgba(231, 239, 253, 0.7);
   width: 80%;
   min-height: 200px;
   height: 100%;
@@ -49,40 +49,42 @@ header{
 }
 
 .card{
-  width:150px;
-  margin:2px;
+  width:70px;
+  margin:1px;
   border:1px solid rgba(0, 20, 0, 0.3);
   background-color:white;
   padding:5px;
-  border-radius:10px;
+  border-radius:3px;
 }
 
 .card-img{
   display:block;
   margin:0 auto;
-
+  height:48px;
+  width:auto;
 }
 
 .card-temp-max{
-  font-size: 2em;
-  color:#911b1bcf;
-}
-
-.card-temp-min{
   font-size: 1em;
-  color:rgba(0, 69, 153, 1);
+  color:#911b1bcf;
   border-top: 1px solid rgba(0, 20, 0, 0.1);
 }
 
-.card-discription{
+.card-temp-min{
+  /* font-size: 1em;*/
+  color:rgba(0, 69, 153, 1);
+  
+}
+
+/*.card-discription{
   font-size: 1em;
   color:navy;
   font-style: italic;
-}
+}*/
 
 .card-day{
- font-size: 1.4em;
-  color:tomato;
+ font-size: 1.2em;
+  color:#aaa;
   border-bottom: 1px solid rgba(0, 20, 0, 0.1);
 }
 

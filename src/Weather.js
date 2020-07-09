@@ -5,28 +5,37 @@ class Weather {
     this._initialDay = 1;
     this._initialize = false;
     this._data = null;
-    this._convertToC = (temp = 0) => Math.round(temp) - 273;
+    // F = 1.8 * (K-273) + 32;
+    // C = K - 273
+    this._convertToC = (temp = 0) => Math.round(temp - 273);
+    this._convertToF = (temp = 0) => Math.round(1.8 * (temp - 273) + 32)
   }
 
   getSize() {
-    return this.listDateArray.length;
+   if(this._initialize) return this.listDateArray.length;
   }
 
   getIcon(opt = 0) {
-    return this.listDateArray[this._currentDay].weather[0].icon;
+    if(this._initialize){
+      return this.listDateArray[this._currentDay].weather[0].icon;
+    }
   }
 
   getCity() {
-    return this._data.city.name;
+    if(this._initialize){
+      return this._data.city.name;
+    }
   }
 
-  getMinMaxTemp() {
+  getMinMaxTemp(option = 'C') {
+   
     if (this._initialize) {
       const temps = [];
+      const convTempFunc = (option === 'F')? this._convertToF : this._convertToC; 
       this._data.list.forEach((item) => {
         const d = new Date(item.dt_txt);
         if (d.getDate() === this._initialDay + this._currentDay) {
-          temps.push(this._convertToC(item.main.temp));
+          temps.push(convTempFunc(item.main.temp));
         }
       });
 
@@ -39,7 +48,7 @@ class Weather {
     if (this._initialize) {
       return this.listDateArray[this._currentDay].weather[0].description;
     }
-    return null;
+    // return null;
   }
 
   getDateArray() {
@@ -68,10 +77,11 @@ class Weather {
   getCurrentTemp() {
     if (this._initialize) {
       return (
-        this._convertToC(this.listDateArray[this._currentDay].main.temp).toString() || 'Unkown.'
+        this._convertToC(this.listDateArray[this._currentDay].main.temp)
+            .toString() || 'Unkown.'
       );
     }
-    return null;
+    // return null;
   }
 
   nextDate() {
@@ -101,7 +111,7 @@ class Weather {
 
   getDayOfWeek() {
     if (this._initialize) {
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednsday', 'Thursday', 'Friday', 'Saturday'];
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       return days[new Date(this.listDateArray[this._currentDay].dt_txt).getDay()];
     }
     return null;
