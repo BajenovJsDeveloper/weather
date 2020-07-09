@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import * as axios from 'axios';
-import { BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
+import { Route, Switch, Redirect} from 'react-router-dom';
 import Weather from './Weather';
 import loadingSpin from './Rolling-1s-200px.png';
+
+const WeatherHourly = () =>{
+
+  return (
+      <div className='container-hourly'>
+
+      </div>
+    );
+}
+
+
 
 const WeatherMap = ({ dataList, visible, handleClick }) =>
     (
@@ -74,7 +85,7 @@ function App({ init }) {
       <div className="App">
         <header className="App-header">
           <h1>
-            <em>Weather for 5 days</em>
+            Weather
           </h1>
         </header>
         <article>
@@ -93,7 +104,7 @@ function App({ init }) {
                   <WeatherMap key='weather' dataList={dataList} handleClick={handleClick} visible={!loading} />
                 )}
               />
-              <Route path='/' component={() => (<div>Hello</div>)}/>
+              <Route path='/weather-page/hourly' component={() => ( <WeatherHourly /> )}/>
               <Redirect to='/weather-page' />
             </Switch>
           </div>
