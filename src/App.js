@@ -69,9 +69,6 @@ const WeatherHourly = ({ listTable, currentItemId }) => {
       <div className="h-header">
         <WeatherDayDisc wdDiscr={wdDiscr} date={curDate} />
       </div>
-      <div className="h-side">
-        <p>Temperature&deg;C</p>
-      </div>
       <div className="h-main">
         <WeatherGrafic tempsArr={tempsArr} currentDay={currentItemId} />
       </div>
@@ -102,7 +99,10 @@ const WeatherHourly = ({ listTable, currentItemId }) => {
 const WeatherMap = ({ dataList, visible, handleClick }) => visible && (
     <div className="card-list">
       {dataList.map((item, idx) => (
-        <div className="card" key={idx} id={idx} onClick={() => handleClick(idx)}>
+        <div className="card" 
+             key={idx} 
+             id={idx} 
+             onClick={() => handleClick(idx)}>
           <p className="card-day">{item.day.slice(0, 3)}</p>
           <img
             src={`https://openweathermap.org/img/wn/${item.img}@2x.png`}
@@ -110,7 +110,10 @@ const WeatherMap = ({ dataList, visible, handleClick }) => visible && (
             alt="weather-igm"
           />
           <p className="card-temp-max">
-            {item.temp[1]}&deg; - <span className="card-temp-min">{item.temp[0]}&deg;</span>
+            {item.temp[1]}&deg; - 
+            <span className="card-temp-min">
+              {item.temp[0]}&deg;
+            </span>
           </p>
         </div>
       ))}
