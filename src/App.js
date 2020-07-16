@@ -124,9 +124,9 @@ const WeatherMap = ( props ) => {
               alt="weather-igm"
             />
             <p className="card-temp-max">
-              {item.temp[1]}&deg; - 
+              {item.temp[1]}&deg; 
               <span className="card-temp-min">
-                {item.temp[0]}&deg;
+                {`  ${item.temp[0]}`}&deg;
               </span>
             </p>
           </div>
@@ -150,10 +150,16 @@ function App({ init }) {
   
   const wDay = ['monday','tuesday','wednesday','thuesday','friday','saturday','sunday'];
 
-  const handleClick = (item) => {
-    console.log(item);
-    setCurItemId(item);
-    history.push(`/weather-page/${dataList[item].day.toLowerCase()}`);
+  const handleClick = (itemId) => {
+    console.log(itemId);
+    setCurItemId(itemId);
+    const timeLine = dataList[itemId].hourly.map(i => {
+            return new Date(i.dt_txt).toLocaleString('en-US',opt);
+          });
+    console.log("Found item:",itemId);
+    setTimeLine(timeLine);
+
+    history.push(`/weather-page/${dataList[itemId].day.toLowerCase()}`);
     console.log(history);
   };
 
@@ -185,16 +191,18 @@ function App({ init }) {
               weather.nextDate();
               return obj;
             });
-          const timeLine = weatherList[curItemId].hourly.map(i => {
-            return new Date(i.dt_txt).toLocaleString('en-US',opt);
-          });
-          const days = weatherList.map(i => i.day.toLowerCase());
           let id = 0;
-          //-- /weather-page/{day of week}
+          //-- getting list of days [Monday, Tuesday, Wednesday ...]
+          const days = weatherList.map(i => i.day.toLowerCase());
+          //-- /weather-page/{ path }
           let path = history.location.pathname.toLowerCase().trim().slice(14);
-          // console.log('path:  ',path);
+          //-- seeking ID of day in days array
           days.forEach((item,idx) =>{
             if(path === item) id = idx;
+          });
+          //-- getting Tinmeline array from weather list by current ID
+          const timeLine = weatherList[id].hourly.map(i => {
+            return new Date(i.dt_txt).toLocaleString('en-US',opt);
           });
           console.log("Found item:",id, days[id],days);
           setTimeLine(timeLine);
