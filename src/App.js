@@ -38,7 +38,7 @@ const WeatherGrafic = React.memo(({ currentDay, tempsArr }) => {
   useEffect(() => {
     const grafic = new Grafic(600, 130, ref.current);
     grafic.drawTemps(tempsArr);
-    console.log("Create grafic...");
+    // console.log("Create grafic...");
   }, []);
   
   return (
@@ -66,7 +66,7 @@ const WeatherForDay = ({ dataList, currentItemId, timeLineId }) => {
     pop: hourly.getPop(timeLineId),
     // date: curDate,
   };
-  console.log('render grafic...');
+  // console.log('render grafic...');
   return (isVisible &&
     <React.Fragment>
       <div className="mam-header">
@@ -127,20 +127,20 @@ function App({ init }) {
   const wDay = ['monday','tuesday','wednesday','thuesday','friday','saturday','sunday'];
 
   const handleClick = (itemId) => {
-    console.log(itemId);
+    // console.log(itemId);
     setCurItemId(itemId);
     const timeLine = dataList[itemId].hourly.map(i => {
             return new Date(i.dt_txt).toLocaleString('en-US',opt);
           });
-    console.log("Found item:",itemId);
+    // console.log("Found item:",itemId);
     setTimeLine(timeLine);
 
     history.push(`/weather-page/${dataList[itemId].day.toLowerCase()}`);
-    console.log(history);
+    // console.log(history);
   };
 
   const timeClick = (id) => {
-    console.log('time: ',timeLine[id]);
+    // console.log('time: ',timeLine[id]);
     setTimelineId(id);
   }
 

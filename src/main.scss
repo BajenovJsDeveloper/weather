@@ -143,7 +143,8 @@ body{
 #grafic{
   position: relative;
   background-color: white;
-  transition:1s;
+  animation-name: fade;
+  animation-duration: 1s;
 }
 .canv-temp{
   position: absolute;
@@ -167,4 +168,8 @@ body{
   100%{
     transform: rotate(360deg);
   }
+}
+@keyframes fade{
+  0%{opacity: 0}
+  100%{opacity: 1;}
 }

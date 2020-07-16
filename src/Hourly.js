@@ -14,7 +14,7 @@ class Hourly {
   #getListArr = function(callback,id=0){
     let result = this._list[this.id].hourly.map(callback);
     result = (result)? result[id]: '';
-    console.log('result id: ',id, result);
+    // console.log('result id: ',id, result);
     return result
   }
 
