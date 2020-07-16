@@ -12,7 +12,10 @@ p{
 }
 
 header{
-  text-align: center;
+  text-align: left;
+}
+.main-app{
+  
 }
 #grafic{
   position: relative;
@@ -28,7 +31,7 @@ header{
   color:gray;
 }
 
-.container{
+/*.container{
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -167,7 +170,7 @@ header{
   width:70px;
   margin:1px;
   border:1px solid rgba(0, 20, 0, 0.3);
-  background-color:#fffada;
+  background-color: #fffef8;
   padding:5px;
   border-radius:3px;
   cursor:pointer;
@@ -194,18 +197,18 @@ header{
   color:rgba(0, 69, 153, 1);
   
 }
-
+*/
 /*.card-discription{
   font-size: 1em;
   color:navy;
   font-style: italic;
 }*/
 
-.card-day{
+/*.card-day{
  font-size: 1.2em;
-  color:#3133aa;
+  color: #fbc41e;
   border-bottom: 1px solid rgba(0, 20, 0, 0.1);
-}
+}*/
 
 .loading{
   width: 100px;
@@ -222,8 +225,8 @@ header{
   }
 }
 
-.card-city{
+/*.card-city{
   font-size: 1.4em;
   color:tomato;
   border-bottom: 1px solid rgba(0, 20, 0, 0.1);
-}
+}*/
