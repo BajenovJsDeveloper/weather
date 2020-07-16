@@ -33,7 +33,7 @@ body{
       flex-direction: column;
       align-items: flex-start;
       grid-area: header;
-      background-color: rgba(249, 223, 214, 1);
+      // background-color: rgba(249, 223, 214, 1);
       text-align: left;
       font-size: 1.2em;
       padding:5px 0;
@@ -45,19 +45,35 @@ body{
         font-size: 1.6em;
         color: #878787;
       }
+      & .ma-header-day > span{
+          margin-left: 10%;
+      }
     }
     .ma-main{
       grid-area: main;
-      background-color: rgba(204, 189, 255, 1);
+      // background-color: rgba(213, 213, 213, 1);
       display: grid;
       grid-template-rows: 5fr 6fr;
       .mam-header {
         display:flex;
+        & small{
+          font-size: 1.8em;
+          margin-left: 20px;
+        }
         .mamh-temp{
           font-size: 5em;
         }
-        .mamh-info>p{
-          text-align: left;
+        .mamh-info{
+          margin-left: 10%;
+          padding:10px;
+          &>p{
+            text-align: left;
+            color:rgba(135, 135, 135, 1); 
+          }
+          & .mamh-info-d{
+            color:rgba(62, 62, 62, 1);
+            font-size: 1.2em;
+          }
         }
       }
       .hh-main{
@@ -66,7 +82,7 @@ body{
     }
     .ma-time{
       grid-area: time;
-      background-color: rgba(153, 255, 204, 1);
+      // background-color: rgba(153, 255, 204, 1);
       display: grid;
       grid-template-columns: repeat(8, 1fr);
       .mat-item{
@@ -74,11 +90,14 @@ body{
         margin:auto 0;
         padding:5px 10px;
         cursor:pointer;
+        &.active{
+          background-color: #cff4ec
+        }
       }
     }
     .ma-days{
       grid-area: days; 
-      background-color: rgba(51, 153, 255, 1);
+      // background-color: rgba(51, 153, 255, 1);
       .card-list{
         display: grid;
         grid-template-columns: repeat(6, 2fr);
@@ -124,6 +143,7 @@ body{
 #grafic{
   position: relative;
   background-color: white;
+  transition:1s;
 }
 .canv-temp{
   position: absolute;

@@ -1,13 +1,14 @@
 
 class Grafic {
-  constructor(width, height) {
+  constructor(width, height, elem) {
     this.width = width;
     this.height = height;
+    this.elem = elem;
   }
 
   drawTemps(arr) {
     const k = Math.round(this.width / 8);
-    const canvas = document.getElementById('grafic');
+    const canvas = this.elem;
 
     if (canvas && arr.length > 0) {
       const { height } = this;
@@ -30,7 +31,7 @@ class Grafic {
       ctx.lineTo(offsetX, height);
       ctx.stroke();
       ctx.fill();
-      ctx.closePath();
+      // ctx.closePath();
 
       ctx.beginPath();
       offsetX = k - 1.5;

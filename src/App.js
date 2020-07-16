@@ -21,74 +21,50 @@ const WeatherDayDisc = ( props ) => {
         <div className="mamh-temp">
           <p>{`${wdDiscr.temperature}`}&deg;</p>
         </div>
+        <small>C</small>
         <div className="mamh-info">
-          <p>{`preasure: ${wdDiscr.pressure} kPa`}</p>
           <p>{`humidity: ${wdDiscr.humidity}%`}</p>
           <p>{`wind speed: ${wdDiscr.windSpeed}m/s`}</p>
-          <p>{`wind direction: ${wdDiscr.windDegrees}`}&deg;</p>
-          <p></p>
+          <p>{`chance of rain: ${wdDiscr.pop}%`}</p>
+          <p className='mamh-info-d'>{wdDiscr.discription}</p>
         </div>
     </React.Fragment>
   );
 }  
 
-const WeatherGrafic = ({ currentDay, tempsArr }) => {
-  const grafic = new Grafic(600, 130);
-
+const WeatherGrafic = React.memo(({ currentDay, tempsArr }) => {
+  const ref = React.createRef();
+  
   useEffect(() => {
+    const grafic = new Grafic(600, 130, ref.current);
     grafic.drawTemps(tempsArr);
-  }, [currentDay]);
-
+    console.log("Create grafic...");
+  }, []);
+  
   return (
     <React.Fragment>
-      <canvas width="600px" height="130px" id="grafic"></canvas>
+      <canvas width="600px" height="130px" id="grafic" ref={ref}></canvas>
     </React.Fragment>
   );
-};
+});
 
 
-// const Hourlylist = ({ listTable, currentItemId }) => {
-
-//   const wrapper = listTable[currentItemId].hourly.map((w, idx) => {
-//             const date = new Date(w.dt_txt);
-//             const dayNow = new Date().getDate();
-//             const time = `${date.getHours().toString().padStart(2, '0')}:
-//                         ${date.getMinutes().toString().padStart(2, '0')}`;
-//             let active = '';
-//             const img = w.weather[0].icon;
-//             const rain = w.rain ? w.rain['3h'] : null;
-//             if (date.getDate() === dayNow && idx === 0) active = 'active';
-//             return (
-//               <div className={`hf-section ${active}`} key={time}>
-//                 <p className="hf-time">{time}</p>
-//                 <img className="hf-img" src={`https://openweathermap.org/img/wn/${img}@2x.png`} />
-//                 {rain && <p className="hf-rain">{rain} mm</p>}
-//               </div>
-//             );
-//         })
-//   return (
-//     <React.Fragment>
-//       {wrapper}
-//     </React.Fragment>
-//   );
-// }
-
-const WeatherForDay = ({ listTable, currentItemId, timeId }) => {
-  const hourly = new Hourly(listTable, currentItemId);
+const WeatherForDay = ({ dataList, currentItemId, timeLineId }) => {
+  const hourly = new Hourly(dataList, currentItemId);
   const tempsArr = hourly.getTArray();
-  let isVisible = !!listTable;
-  const curDate = isVisible ? listTable[currentItemId].date : '';
+  let isVisible = !!dataList;
   const wdDiscr = {
     weekDay: hourly.getWeekDay(),
-    pressure: hourly.getPpressure(),
-    humidity: hourly.getHumidity(),
-    temperature: hourly.getMaxTemp(),
-    windSpeed: hourly.getWindSpeed(),
-    windDegrees: hourly.getWindDir(),
-    discription: hourly.getDiscription(),
-    curTimeWeatherImg: hourly.getCurImg(),
-    date: curDate,
-    // timeId: timeId,
+    // pressure: hourly.getPpressure(timeLineId),
+    humidity: hourly.getHumidity(timeLineId),
+    temperature: hourly.getMaxTemp(timeLineId),
+    windSpeed: hourly.getWindSpeed(timeLineId),
+    // windDegrees: hourly.getWindDir(timeLineId),
+    discription: hourly.getDiscription(timeLineId),
+    curTimeWeatherImg: hourly.getCurImg(timeLineId),
+    rain: hourly.getRain(timeLineId),
+    pop: hourly.getPop(timeLineId),
+    // date: curDate,
   };
   console.log('render grafic...');
   return (isVisible &&
@@ -105,13 +81,13 @@ const WeatherForDay = ({ listTable, currentItemId, timeId }) => {
 };
 
 const WeatherMap = ( props ) => {
-  const { dataList, visible, handleClick, curItem } = props;
-  console.log('rerender...', curItem)
+  const { dataList, visible, handleClick, curItemId } = props;
+  // console.log('rerender...', curItem)
   
   return (
     <div className="card-list">
       {dataList.map((item, idx) => {
-        const active = (curItem === idx)? 'active':'';
+        const active = (curItemId === idx)? 'active':'';
         return (
           <div className={`card ${active}`} 
                key={idx} 
@@ -165,7 +141,7 @@ function App({ init }) {
 
   const timeClick = (id) => {
     console.log('time: ',timeLine[id]);
-    setTimelineId(timeLine[id]);
+    setTimelineId(id);
   }
 
   useEffect(() => {
@@ -223,7 +199,7 @@ function App({ init }) {
   return (
     <div>
         <Main loading={loading} city={city} time={time} dataList={dataList} timeClick={timeClick}
-          curItemId={curItemId} timeLine={timeLine} history={history} handleClick={handleClick}
+          curItemId={curItemId} timeLine={timeLine}  handleClick={handleClick}
           timeLineId={timeLineId}
         
         />
@@ -236,7 +212,6 @@ function Main(props){
          dataList,
          curItemId,
          time,
-         history,
          handleClick,
          loading,
          timeClick,
@@ -272,32 +247,31 @@ function Main(props){
       )}
       {!loading &&
         <React.Fragment>
-          <header className="ma-header">
-            <p className="ma-header-city">{city}</p>
-            <p>
+          <header className='ma-header'>
+            <p className='ma-header-city'>{city}</p>
+            <p className='ma-header-day'>
               {dataList[curItemId].day}
-              <span> {time}</span>
+              <span>{(curItemId === 0)? time:''}</span>
             </p>
-            <p>clear sky</p>
           </header>
           <div className="ma-main">
              <Switch>
               <Route
                 exact path={urls}
-                component={() => <WeatherForDay  listTable={dataList}
+                component={() => <WeatherForDay  dataList={dataList}
                                                  timeLineId={timeLineId}
-                                                 currentItemId={curItemId} />
+                                                 curItemId={curItemId} />
               }/>
               <Redirect to={`/weather-page/${defaultPage}`} />
             </Switch>
           </div>
           <div className='ma-time'>
-            {timeLine.map((i,id) => (<div key={i} onClick={() => timeClick(id)} className='mat-item'><span>{i}</span></div>))}
+            <TimeLine timeLine={timeLine}  timeClick={timeClick} timeLineId={timeLineId}/>
           </div>
           <div className='ma-days'>
             <WeatherMap dataList={dataList} 
                         visible={false} 
-                        curItem={curItemId}
+                        curItemId={curItemId}
                         handleClick={handleClick} />
           </div>
         </React.Fragment>
@@ -306,6 +280,23 @@ function Main(props){
     );
 }
 
+function TimeLine ({ timeLine, timeClick, timeLineId }) {
+
+  return (
+    <React.Fragment>
+      {timeLine.map((i,id) =>{
+        let active = (timeLineId === id)? 'active':'';
+        return ( 
+          <div key={i} 
+              onClick={() => timeClick(id)} 
+              className={`mat-item ${active}`}>
+            <span>{i}</span>
+          </div>
+        )})
+      }
+    </React.Fragment>
+  );
+}
 
 // const App = withRouter(Main);
 export default App
