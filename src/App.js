@@ -49,8 +49,8 @@ const WeatherGrafic = React.memo(({ currentDay, tempsArr }) => {
 });
 
 
-const WeatherForDay = ({ dataList, currentItemId, timeLineId }) => {
-  const hourly = new Hourly(dataList, currentItemId);
+const WeatherForDay = ({ dataList, curItemId, timeLineId }) => {
+  const hourly = new Hourly(dataList, curItemId);
   const tempsArr = hourly.getTArray();
   let isVisible = !!dataList;
   const wdDiscr = {
@@ -74,7 +74,7 @@ const WeatherForDay = ({ dataList, currentItemId, timeLineId }) => {
       </div>
       <div className="mam-graf">
         <WeatherGrafic tempsArr={tempsArr} 
-                       currentDay={currentItemId} />
+                       currentDay={curItemId} />
       </div>
     </React.Fragment>
   );
