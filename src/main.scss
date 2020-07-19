@@ -6,9 +6,21 @@
     color: rgba(135, 135, 135, 1);
 }
 
+$color1: rgba(100, 100, 100, 1);
+$color2: rgba(186, 186, 186, 1);
+$color3: rgba(50, 50, 50, 1);;
+#grafic{
+  position: relative;
+  top:0;
+  left:0;
+  background-color: white;
+  animation-name: fade;
+  animation-duration: 2s;
+  transition:1s;
+}
+
 body{
   font-size: 14px;
-  // font-family: 'Roboto', sans-serif;
   font-family: arial,sans-serif;
   display: flex;
   justify-content: center;
@@ -44,17 +56,14 @@ body{
       flex-direction: column;
       align-items: flex-start;
       grid-area: header;
-      // background-color: rgba(249, 223, 214, 1);
       text-align: left;
       font-size: 1.2em;
       padding:5px 0;
-      color:#878787;
       & p{
         margin-left:10px;
       }
       & p:first-child{
         font-size: 1.6em;
-        color: #878787;
       }
       & .ma-header-day > span{
           margin-left: 10%;
@@ -62,7 +71,6 @@ body{
     }
     .ma-main{
       grid-area: main;
-      // background-color: rgba(213, 213, 213, 1);
       display: grid;
       grid-template-rows: 5fr 6fr;
       .mam-header {
@@ -88,7 +96,16 @@ body{
           font-size: 16px;
           &>p{
             text-align: left;
-            color:rgba(135, 135, 135, 1); 
+          }
+          & button{
+            padding: 3px;
+            margin:2px;
+            border: 1px solid #e1e1e1;
+            border-radius: 2px;
+            color: $color3;
+            &:hover{
+              box-shadow: 0 0 2px black;
+            }
           }
         }
       }
@@ -101,7 +118,6 @@ body{
     }
     .ma-time{
       grid-area: time;
-      // background-color: rgba(153, 255, 204, 1);
       display: grid;
       grid-template-columns: repeat(8, 1fr);
       .mat-item{
@@ -116,7 +132,6 @@ body{
     }
     .ma-days{
       grid-area: days; 
-      // background-color: rgba(51, 153, 255, 1);
       .card-list{
         display: grid;
         grid-template-columns: repeat(5, 2fr);
@@ -126,7 +141,6 @@ body{
           height:100%;
           box-sizing: border-box;
           margin:1px;
-          // border:1px solid rgba(0, 20, 0, 0.3);
           background-color: #fffef8;
           padding:5px;
           border-radius:3px;
@@ -141,12 +155,11 @@ body{
         .card-temp-max{
           margin-top: 10px;
           font-size: 1em;
-          color:rgba(135, 135, 135, 1);
-          // border-top: 1px solid rgba(0, 20, 0, 0.1);
+          color: $color1;
         }
         .card-temp-min{
           margin-left:10px;
-          color:rgba(186, 186, 186, 1);
+          color: $color2;
           
         }
         & .active{
@@ -159,23 +172,6 @@ body{
 }
 
 //-----------------------------
-
-
-#grafic{
-  position: relative;
-  top:0;
-  left:0;
-  background-color: white;
-  animation-name: fade;
-  animation-duration: 2s;
-  transition:1s;
-}
-.canv-temp{
-  position: absolute;
-  top:150px;
-  z-index: 100;
-  color:gray;
-}
 
 @keyframes spin{
   100%{

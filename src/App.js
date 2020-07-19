@@ -8,8 +8,7 @@ import Weather from './Weather';
 import Grafic from './Grafic';
 import Hourly from './Hourly';
 import loadingSpin from './Rolling-1s-200px.png';
-
-const Mycontext = React.createContext();
+import Mycontext from './MyContext';
 
 const WeatherDayDisc = (props) => {
   const { wdDiscr } = props;
@@ -29,6 +28,9 @@ const WeatherDayDisc = (props) => {
         <p>{`Chance of rain: ${wdDiscr.pop}%`}</p>
         <p>{`Humidity: ${wdDiscr.humidity}%`}</p>
         <p>{`Wind: ${wdDiscr.windSpeed}m/s`}</p>
+        <button>Temperature</button>
+        <button>Chance of rain</button>
+        <button>Wind</button>
       </div>
     </React.Fragment>
   );
@@ -42,13 +44,11 @@ const WeatherGrafic = React.memo((props) => {
   useEffect(() => {
     Grafic.init(600, 130, ref.current);
     Grafic.drawTemps(temperaturesArr.arr);
-    // console.log('Create grafic...');
   }, [temperaturesArr.arr]);
 
   useEffect(() => {
     Grafic.slide(curItemId, temperaturesArr.tshift);
-    // console.log('Element item changed...');
-  }, [curItemId]);
+  }, [curItemId, temperaturesArr.tshift]);
 
   return (
     <React.Fragment>
@@ -61,23 +61,17 @@ const WeatherForDay = React.memo((props) => {
   const { dataList, curItemId, timeLineId } = props;
 
   Hourly.init(dataList, curItemId);
-  const isVisible = true; //! !dataList;
   const wdDiscr = {
     weekDay: Hourly.getWeekDay(),
-    // pressure: Hourly.getPpressure(timeLineId),
     humidity: Hourly.getHumidity(timeLineId),
     temperature: Hourly.getMaxTemp(timeLineId),
     windSpeed: Hourly.getWindSpeed(timeLineId),
-    // windDegrees: Hourly.getWindDir(timeLineId),
-    // discription: Hourly.getDiscription(timeLineId),
     curTimeWeatherImg: Hourly.getCurImg(timeLineId),
     rain: Hourly.getRain(timeLineId),
     pop: Hourly.getPop(timeLineId),
-    // date: curDate,
   };
 
   return (
-    isVisible && (
       <React.Fragment>
         <div className="mam-header">
           <WeatherDayDisc wdDiscr={wdDiscr} />
@@ -90,11 +84,10 @@ const WeatherForDay = React.memo((props) => {
           </Mycontext.Consumer>
         </div>
       </React.Fragment>
-    )
   );
 });
 
-const WeatherCrds = React.memo((props) => {
+const WeatherCards = React.memo((props) => {
   const { dataList, handleClick, curItemId } = props;
   const MIN = 0;
   const MAX = 1;
@@ -104,7 +97,10 @@ const WeatherCrds = React.memo((props) => {
       {dataList.map((item, idx) => {
         const active = curItemId === idx ? 'active' : '';
         return (
-          <div className={`card ${active}`} key={idx} id={idx} onClick={() => handleClick(idx)}>
+          <div className={`card ${active}`} 
+            key={idx} 
+            id={idx} 
+            onClick={() => handleClick(idx)}>
             <p className="card-day">{item.day.slice(0, 3)}</p>
             <img
               src={`https://openweathermap.org/img/wn/${item.img}@2x.png`}
@@ -131,8 +127,9 @@ const Loading = (props) => (
 
 const Main = React.memo((props) => {
   const {
-    city, dataList, curItemId, time, loading, tArr, timeLineId,
+    city, dataList, curItemId, time, loading, timeLineId,
   } = props;
+  // const textDescription = discription.slice(0, 1).toUpperCase().concat(text.slice(1));
   const urls = [
     '/weather-page',
     '/weather-page/monday/',
@@ -144,7 +141,7 @@ const Main = React.memo((props) => {
     '/weather-page/sunday/',
   ];
 
-  const [description, setDescription] = useState(''); // (!laoding)? dataList[0].hourly[0] : '';
+  const [description, setDescription] = useState(''); 
   const defaultPage = dataList ? dataList[0].day.toLowerCase() : '';
 
   useEffect(() => {
@@ -153,8 +150,8 @@ const Main = React.memo((props) => {
       text = text.slice(0, 1).toUpperCase().concat(text.slice(1));
       setDescription(text);
     }
-    console.log('discriprtion...');
-  }, [loading, curItemId, timeLineId]);
+    // console.log('discriprtion...');
+  }, [loading, curItemId, timeLineId, dataList]);
 
   return (
     <div className="main-app">
@@ -179,8 +176,8 @@ const Main = React.memo((props) => {
                     {(value) => (
                       <WeatherForDay
                         dataList={dataList}
-                        tArr={tArr}
-                        timeLineId={value.timeLineId}
+                        tArr={value.temperaturesArr}
+                        timeLineId={timeLineId}
                         curItemId={curItemId}
                       />
                     )}
@@ -204,9 +201,8 @@ const Main = React.memo((props) => {
           <div className="ma-days">
             <Mycontext.Consumer>
               {(value) => (
-                <WeatherCrds
+                <WeatherCards
                   dataList={dataList}
-                  visible={false}
                   curItemId={curItemId}
                   handleClick={value.handleClick}
                 />
@@ -262,6 +258,7 @@ function App(props) {
         console.log(response);
         if (response.statusText === 'OK') {
           try {
+            //--- initializng weather Class with some methods
             Weather.init(response.data);
             // -- getting array of 5 elements by sequance with  date and weather
             // -- [{date:..., },{date + 1:..., },...]
@@ -279,13 +276,12 @@ function App(props) {
                 // -- ["00:00","03:00","06:00"...]
                 hourly: Weather.getWeatherHourly(item.dt_txt),
               };
+              //-- jump to the next date in list
               Weather.nextDate();
               return obj;
             });
             let dayIdx = 0;
             const newTempsArr = response.data.list.map((i) => Math.round(i.main.temp - 273));
-            console.log(newTempsArr);
-
             // -- getting list of days [Monday, Tuesday, Wednesday ...] from dtatList array
             const days = weatherList.map((i) => i.day.toLowerCase());
             // -- getting path in format /weather-page/{ path }
@@ -312,15 +308,13 @@ function App(props) {
             setTimeout(() => {
               setLoading(false);
             }, 1000);
-            // -- calculate current
-            // const time = new Date().toLocaleTimeString('en-US', opt);
           } catch (err) {
             console.log('Sorry! Can`t load { data } from Api server! :', err.message);
           }
         }
       })
       .catch((err) => {
-        console.log('Failed to load data from wether server Api...', err);
+        console.log('Failed to load data from wether server Api...', err.message);
       });
   }, [history]);
 
@@ -342,12 +336,11 @@ function App(props) {
 
 const TimeLine = (props) => {
   const { timeLine, timeClick, timeLineId } = props;
-
+  const len = timeLine.length - 1;
+  let active = '';
   return (
     <React.Fragment>
-      {timeLine.map((i, id) => {
-        let active = '';
-        const len = timeLine.length - 1;
+      {timeLine.map((i, id) => { 
         if (len < timeLineId) active = len === id ? 'active' : '';
         else active = timeLineId === id ? 'active' : '';
         return (
