@@ -1,15 +1,25 @@
-class Weather {
-  
+class WeatherData {
   #currentDay = 0;
+
   #initialDay = 1;
+
   #initialize = false;
-  #data = null; 
+
+  #data = null;
+
   #listDateArray = [];
+
+  #firstDayTimeShift = 0;
+
   #convertToC = (temp = 0) => Math.round(temp - 273);
+
   #convertToF = (temp = 0) => Math.round(1.8 * (temp - 273) + 32);
-  constructor() {
-    // F = 1.8 * (K-273) + 32;
-    // C = K - 273
+
+  // F = 1.8 * (K-273) + 32;
+  // C = K - 273
+
+  getShift() {
+    return this.#firstDayTimeShift;
   }
 
   getSize() {
@@ -32,32 +42,35 @@ class Weather {
   }
 
   getWeatherHourly(date) {
-    const hourArr = [];
+    const hoursArr = [];
     if (this.#initialize) {
       const dateNow = new Date();
       const initialDay = new Date(date).getDate();
       this.#data.list.forEach((item) => {
         const curDay = new Date(item.dt_txt).getDate();
         if (curDay === initialDay) {
-          hourArr.push(item);
+          hoursArr.push(item);
         }
       });
 
-      if (initialDay === dateNow.getDate() && hourArr.length < 8) {
-        const len = hourArr.length;
+      if (initialDay === dateNow.getDate() && hoursArr.length < 8) {
+        const len = hoursArr.length;
+        // -- create time shift number in first day
+        // -- which must have not an 8 parts in time line (24/3 = 8)
+        this.#firstDayTimeShift = len;
         for (let i = 0; i < 8 - len; i++) {
-          // -- add some elements, which`s need to be 8
-          hourArr.push(this.#data.list[len + i]);
+          // -- add some time elements, which`s need to be 8
+          hoursArr.push(this.#data.list[len + i]);
         }
       }
     }
-    return hourArr;
+    return hoursArr;
   }
 
   getMinMaxTemp(option = 'C') {
     if (this.#initialize) {
       const temps = [];
-      const convTempFunc = (option === 'F') ? this.#convertToF : this.#convertToC;
+      const convTempFunc = option === 'F' ? this.#convertToF : this.#convertToC;
       this.#data.list.forEach((item) => {
         const d = new Date(item.dt_txt);
         if (d.getDate() === this.#initialDay + this.#currentDay) {
@@ -76,72 +89,68 @@ class Weather {
     return null;
   }
 
-  getDateArray() {
+  getDateArray5() {
     return this.#listDateArray;
   }
 
   init(data) {
-    if (data) {
+    if (typeof data.list === 'object') {
       this.#data = data;
       let firstDay = 0;
-      const strData = new Date(this.#data.list[0].dt_txt);
-      this.#initialDay = strData.getDate();
-      this.#listDateArray = this.#data.list.filter((date) => {
-        const d = new Date(date.dt_txt);
-        if (d.getDate() !== firstDay) {
-          firstDay = d.getDate();
+      const stringDate = new Date(this.#data.list[0].dt_txt);
+      this.#initialDay = stringDate.getDate();
+      this.#listDateArray = this.#data.list.filter((item) => {
+        const dt = new Date(item.dt_txt);
+        if (dt.getDate() !== firstDay) {
+          firstDay = dt.getDate();
           return true;
         }
         return false;
       });
-      this.#initialize = true;  // -- initialized
+      // -- initialized
+      this.#initialize = true;
+      // -- delet last element from array. Need to be 5 alements
+      if (this.#listDateArray.length > 5) this.#listDateArray.pop();
     }
-    return this.#initialize; // -- not initialized
+    // -- not initialized
+    return this.#initialize;
   }
+
   nextDate() {
-    if(this.#initialize && this.#currentDay < 6){
+    if (this.#initialize && this.#currentDay < 6) {
       this.#currentDay++;
       return true;
     }
     return false;
   }
 
-  getCurDateTime(format) {
-    if(this.#initialize){
-      const newDate = new Date(this.#listDateArray[this.#currentDay].dt_txt);
-      const option = { day: 'numeric', month: 'long', year: 'numeric' };
-      switch (format) {
-        case 'DMY':
-          // option.weekday = 'long';
-          return newDate.toLocaleDateString('en-US', option);
-        case 'DMYhm':
-          option.minute = '2-digit';
-          option.hour = '2-digit';
-          option.hour12 = false;
-          return newDate.toLocaleDateString('en-US', option);
-        default:
-          return '';
-      }
-    }
-    return '';
-  }
+  // getCurDateTime(format) {
+  //   if (this.#initialize) {
+  //     const newDate = new Date(this.#listDateArray[this.#currentDay].dt_txt);
+  //     const option = { day: 'numeric', month: 'long', year: 'numeric' };
+  //     switch (format) {
+  //       case 'DMY':
+  //         // option.weekday = 'long';
+  //         return newDate.toLocaleDateString('en-US', option);
+  //       case 'DMYhm':
+  //         option.minute = '2-digit';
+  //         option.hour = '2-digit';
+  //         option.hour12 = false;
+  //         return newDate.toLocaleDateString('en-US', option);
+  //       default:
+  //         return '';
+  //     }
+  //   }
+  //   return '';
+  // }
 
   getDayOfWeek() {
     if (this.#initialize) {
       const newDate = new Date(this.#listDateArray[this.#currentDay].dt_txt);
-      return newDate.toLocaleString('en-US',{weekday:'long'});
+      return newDate.toLocaleString('en-US', { weekday: 'long' });
     }
     return '';
   }
-
-  // getTimeList(){
-  //   if (this.#initialize) {
-  //     const timeList = this.#listDateArray[this.#currentDay]
-  //   }
-  // }
 }
-
-
-
-
+const Weather = new WeatherData();
 export default Weather;

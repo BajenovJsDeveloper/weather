@@ -3,6 +3,7 @@
 *{
     margin: 0;
     padding: 0;
+    color: rgba(135, 135, 135, 1);
 }
 
 body{
@@ -24,10 +25,20 @@ body{
     grid-template-areas: "header" "main" "time" "days";
     grid-template-rows: 2fr 6fr 1fr 3fr; 
     grid-gap:1px;
-    background-color: rgba(255, 255, 219, 1);
-    border:1px solid;
-    border-radius:10px;
+    background-color: rgba(255, 255, 240, 1);
+    border:1px solid #dfe1e5;
+    border-radius:8px;
     overflow: hidden;
+    .mbl-loading{
+      text-align: center;
+      & .loading{
+        width: 100px;
+        animation-name: spin;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+      }
+    }
     .ma-header{
       display: flex;
       flex-direction: column;
@@ -60,21 +71,29 @@ body{
           font-size: 1.8em;
           margin-left: 20px;
         }
+        & .mam-img{
+          width:100px;
+          height: 100px;
+        }
         .mamh-temp{
-          font-size: 5em;
+          font-size: 4.6em;
+          &>p{
+            color:black;
+          }
         }
         .mamh-info{
           margin-left: 10%;
           padding:10px;
+          line-height: 1.5;
+          font-size: 16px;
           &>p{
             text-align: left;
             color:rgba(135, 135, 135, 1); 
           }
-          & .mamh-info-d{
-            color:rgba(62, 62, 62, 1);
-            font-size: 1.2em;
-          }
         }
+      }
+      .mam-graf{
+        overflow: hidden;
       }
       .hh-main{
         display: flex;
@@ -91,7 +110,7 @@ body{
         padding:5px 10px;
         cursor:pointer;
         &.active{
-          background-color: #cff4ec
+          background-color: rgba(255, 250, 175, 1);
         }
       }
     }
@@ -100,14 +119,14 @@ body{
       // background-color: rgba(51, 153, 255, 1);
       .card-list{
         display: grid;
-        grid-template-columns: repeat(6, 2fr);
+        grid-template-columns: repeat(5, 2fr);
         height: 100%;
         .card{
           width:auto;
           height:100%;
           box-sizing: border-box;
           margin:1px;
-          border:1px solid rgba(0, 20, 0, 0.3);
+          // border:1px solid rgba(0, 20, 0, 0.3);
           background-color: #fffef8;
           padding:5px;
           border-radius:3px;
@@ -122,15 +141,17 @@ body{
         .card-temp-max{
           margin-top: 10px;
           font-size: 1em;
-          color:#911b1bcf;
-          border-top: 1px solid rgba(0, 20, 0, 0.1);
+          color:rgba(135, 135, 135, 1);
+          // border-top: 1px solid rgba(0, 20, 0, 0.1);
         }
         .card-temp-min{
-          color:rgba(0, 69, 153, 1);
+          margin-left:10px;
+          color:rgba(186, 186, 186, 1);
           
         }
         & .active{
-          background-color: rgba(201, 254, 248, 1);
+          background-color: rgba(255, 250, 175, 1);
+          border:1px solid rgba(0, 20, 0, 0.1);
         }
       }
     }
@@ -142,9 +163,12 @@ body{
 
 #grafic{
   position: relative;
+  top:0;
+  left:0;
   background-color: white;
   animation-name: fade;
-  animation-duration: 1s;
+  animation-duration: 2s;
+  transition:1s;
 }
 .canv-temp{
   position: absolute;
@@ -152,17 +176,6 @@ body{
   z-index: 100;
   color:gray;
 }
-
-
-
-.loading{
-  width: 100px;
-  animation-name: spin;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-}
-
 
 @keyframes spin{
   100%{
