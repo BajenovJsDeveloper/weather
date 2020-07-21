@@ -74,13 +74,6 @@ class HourlyList {
     return null;
   }
 
-  // getWindDir(id) {
-  //   if (this._init) {
-  //     return this.#getListArr((i) => i.wind.deg, id);
-  //   }
-  //   return null;
-  // }
-
   getDiscription(id) {
     if (this._init) {
       const discr = this.#getListArr((i) => i.weather[0].description, id);

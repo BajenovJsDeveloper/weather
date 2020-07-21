@@ -99,6 +99,7 @@ const WeatherCards = React.memo((props) => {
     <div className="card-list">
       {dataList.map((item, idx) => {
         const active = curItemId === idx ? 'active' : '';
+        const [tempMin, tempMax] = item.temp;
         return (
           <div className={`card ${active}`} 
             key={idx} 
@@ -111,8 +112,8 @@ const WeatherCards = React.memo((props) => {
               alt="weather-igm"
             />
             <p className="card-temp-max">
-              {item.temp[MAX]}&deg;
-              <span className="card-temp-min">{`${item.temp[MIN]}`}&deg;</span>
+              {tempMax}&deg;
+              <span className="card-temp-min">{`${tempMin}`}&deg;</span>
             </p>
           </div>
         );
@@ -217,9 +218,6 @@ const Main = React.memo((props) => {
 });
 
 function App(props) {
-  const opt = { minute: '2-digit', hour: '2-digit', hour12: false };
-  const opt1 = { hour: '2-digit', hour12: false };
-  const currentTime = `${new Date().toLocaleTimeString('en-US', opt1)}:00`;
   const [loading, setLoading] = useState(true);
   const [dataList, setDataList] = useState(null);
   const [city, setCity] = useState('');
@@ -228,13 +226,17 @@ function App(props) {
   const [grafic, setGrafic] = useState({ arr: [], tshift: 0 });
   const [timeLineId, setTimelineId] = useState(0);
   const [graficId, setGraficId] = useState(0);
+
+  const opt = { minute: '2-digit', hour: '2-digit', hour12: false };
+  const opt1 = { hour: '2-digit', hour12: false };
+  const currentTime = `${new Date().toLocaleTimeString('en-US', opt1)}:00`;
   const history = useHistory();
 
-  const callbackTime = (i) => new Date(i.dt_txt).toLocaleString('en-US', opt);
+  const calculateTime = (i) => new Date(i.dt_txt).toLocaleString('en-US', opt);
 
   const handleClick = (itemId) => {
     setCurItemId(itemId);
-    const newTimeLine = dataList[itemId].hourly.map(callbackTime);
+    const newTimeLine = dataList[itemId].hourly.map(calculateTime);
     setTimeLine(newTimeLine);
     history.push(`/weather-page/${dataList[itemId].day.toLowerCase()}`);
   };
@@ -277,7 +279,8 @@ function App(props) {
   };
   useEffect(() => {
     const API_KEY = '1851a6abb6807389fbf59c68a2d03926';
-    const url = `https://api.openweathermap.org/data/2.5/forecast?id=618426&APPID=${API_KEY}&lang=ru`;
+    const LANGUAGE = 'lang=en';
+    const url = `https://api.openweathermap.org/data/2.5/forecast?id=618426&APPID=${API_KEY}&${LANGUAGE}`;
     axios
       .get(url)
       .then((response) => {
@@ -317,7 +320,7 @@ function App(props) {
               if (path === item) defaultDay = idx;
             });
             // -- getting Tinmeline array from weather list by current ID
-            const newTimeLine = weatherList[defaultDay].hourly.map(callbackTime);
+            const newTimeLine = weatherList[defaultDay].hourly.map(calculateTime);
             // -- set time line array like [00:00, 03:00, 06:00...]
             setTimeLine(newTimeLine);
             // -- set current index day in list of [Monday, Tuesday, Wednesday, ...]
