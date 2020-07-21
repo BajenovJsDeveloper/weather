@@ -11,7 +11,7 @@ import loadingSpin from './Rolling-1s-200px.png';
 import Mycontext from './MyContext';
 
 const WeatherDayDisc = (props) => {
-  const { wdDiscr } = props;
+  const { wdDiscr, hdlClickGrafic } = props;
   return (
     <React.Fragment>
       <div className="mam-img">
@@ -28,27 +28,26 @@ const WeatherDayDisc = (props) => {
         <p>{`Chance of rain: ${wdDiscr.pop}%`}</p>
         <p>{`Humidity: ${wdDiscr.humidity}%`}</p>
         <p>{`Wind: ${wdDiscr.windSpeed}m/s`}</p>
-        <button>Temperature</button>
-        <button>Chance of rain</button>
-        <button>Wind</button>
+        <button onClick={()=>hdlClickGrafic(0)}>Temperature</button>
+        <button onClick={()=>hdlClickGrafic(1)}>Chance of rain</button>
+        <button onClick={()=>hdlClickGrafic(2)}>Wind</button>
       </div>
     </React.Fragment>
   );
 };
 
 const WeatherGrafic = React.memo((props) => {
-  const { temperaturesArr, curItemId } = props;
-
+  const { graficArray, curItemId, graficId } = props;
   const ref = React.createRef();
 
   useEffect(() => {
-    Grafic.init(600, 130, ref.current);
-    Grafic.drawTemps(temperaturesArr.arr);
-  }, [temperaturesArr.arr]);
+    Grafic.init(600, 130, 3600, ref.current, graficId);
+    Grafic.draw(graficArray.arr);
+  }, [graficArray.arr, graficId]);
 
   useEffect(() => {
-    Grafic.slide(curItemId, temperaturesArr.tshift);
-  }, [curItemId, temperaturesArr.tshift]);
+    Grafic.slide(curItemId, graficArray.tshift);
+  }, [curItemId, graficArray.tshift]);
 
   return (
     <React.Fragment>
@@ -72,18 +71,22 @@ const WeatherForDay = React.memo((props) => {
   };
 
   return (
-      <React.Fragment>
-        <div className="mam-header">
-          <WeatherDayDisc wdDiscr={wdDiscr} />
-        </div>
-        <div className="mam-graf">
-          <Mycontext.Consumer>
-            {(value) => (
-              <WeatherGrafic temperaturesArr={value.temperaturesArr} curItemId={curItemId} />
-            )}
-          </Mycontext.Consumer>
-        </div>
-      </React.Fragment>
+      
+      <Mycontext.Consumer>
+        {(value) => (
+          <React.Fragment>
+            <div className="mam-header">
+              <WeatherDayDisc wdDiscr={wdDiscr} 
+                              hdlClickGrafic={value.hdlClickGrafic}/>
+            </div>
+            <div className="mam-graf">
+              <WeatherGrafic graficArray={value.graficArray} 
+                             graficId={value.graficId}
+                             curItemId={curItemId} />
+            </div>
+          </React.Fragment>)
+        }
+      </Mycontext.Consumer>
   );
 });
 
@@ -129,7 +132,6 @@ const Main = React.memo((props) => {
   const {
     city, dataList, curItemId, time, loading, timeLineId,
   } = props;
-  // const textDescription = discription.slice(0, 1).toUpperCase().concat(text.slice(1));
   const urls = [
     '/weather-page',
     '/weather-page/monday/',
@@ -150,7 +152,6 @@ const Main = React.memo((props) => {
       text = text.slice(0, 1).toUpperCase().concat(text.slice(1));
       setDescription(text);
     }
-    // console.log('discriprtion...');
   }, [loading, curItemId, timeLineId, dataList]);
 
   return (
@@ -176,7 +177,7 @@ const Main = React.memo((props) => {
                     {(value) => (
                       <WeatherForDay
                         dataList={dataList}
-                        tArr={value.temperaturesArr}
+                        graficArray={value.graficArray}
                         timeLineId={timeLineId}
                         curItemId={curItemId}
                       />
@@ -224,8 +225,9 @@ function App(props) {
   const [city, setCity] = useState('');
   const [curItemId, setCurItemId] = useState(0);
   const [timeLine, setTimeLine] = useState([]);
-  const [tArr, setTarr] = useState({ arr: [], tshift: 0 });
+  const [grafic, setGrafic] = useState({ arr: [], tshift: 0 });
   const [timeLineId, setTimelineId] = useState(0);
+  const [graficId, setGraficId] = useState(0);
   const history = useHistory();
 
   const callbackTime = (i) => new Date(i.dt_txt).toLocaleString('en-US', opt);
@@ -234,24 +236,48 @@ function App(props) {
     setCurItemId(itemId);
     const newTimeLine = dataList[itemId].hourly.map(callbackTime);
     setTimeLine(newTimeLine);
-
     history.push(`/weather-page/${dataList[itemId].day.toLowerCase()}`);
   };
+
+  const hdlClickGrafic = (itemId) =>{
+    console.log('click...',itemId)
+    const obj = {arr: null, tshift: Weather.getShift()}
+    if(!loading){
+      switch(itemId){
+        case 0:
+          obj.arr = Weather.getTemperatures();
+          break;
+        case 1:
+          obj.arr = Weather.getRain();
+          break;
+        case 2:
+          obj.arr = Weather.getWind();
+          break;
+        default:
+          obj.arr = Weather.getTemperatures();
+      }
+      setGrafic(obj);
+      setGraficId(itemId);
+    }  
+  }
 
   const timeClick = (id) => {
     setTimelineId(id);
   };
+
   const contextValue = {
-    temperaturesArr: tArr,
+    graficArray: grafic,
     curItemId,
     handleClick,
     timeClick,
     timeLine,
     timeLineId,
+    graficId,
+    hdlClickGrafic,
   };
   useEffect(() => {
     const API_KEY = '1851a6abb6807389fbf59c68a2d03926';
-    const url = `https://api.openweathermap.org/data/2.5/forecast?id=618426&APPID=${API_KEY}`;
+    const url = `https://api.openweathermap.org/data/2.5/forecast?id=618426&APPID=${API_KEY}&lang=ru`;
     axios
       .get(url)
       .then((response) => {
@@ -280,29 +306,29 @@ function App(props) {
               Weather.nextDate();
               return obj;
             });
-            let dayIdx = 0;
-            const newTempsArr = response.data.list.map((i) => Math.round(i.main.temp - 273));
+            let defaultDay = 0;
             // -- getting list of days [Monday, Tuesday, Wednesday ...] from dtatList array
             const days = weatherList.map((i) => i.day.toLowerCase());
             // -- getting path in format /weather-page/{ path }
             const path = history.location.pathname.toLowerCase().trim().slice(14);
             // -- seeking ID of day in days array
+            // -- if day not found, then redirect to main page
             days.forEach((item, idx) => {
-              if (path === item) dayIdx = idx;
+              if (path === item) defaultDay = idx;
             });
             // -- getting Tinmeline array from weather list by current ID
-            const newTimeLine = weatherList[dayIdx].hourly.map(callbackTime);
+            const newTimeLine = weatherList[defaultDay].hourly.map(callbackTime);
             // -- set time line array like [00:00, 03:00, 06:00...]
             setTimeLine(newTimeLine);
             // -- set current index day in list of [Monday, Tuesday, Wednesday, ...]
-            setCurItemId(dayIdx);
+            setCurItemId(defaultDay);
             // -- set list of 5 elements with full description on every day
             setDataList(weatherList);
             // -- set City name
             setCity(Weather.getCity());
-            // -- set temperatures array for all period and shift time on first day
-            setTarr({
-              arr: newTempsArr,
+            // -- set grafic array for all period and shift time on first day
+            setGrafic({
+              arr: Weather.getTemperatures(),
               tshift: Weather.getShift(),
             });
             setTimeout(() => {

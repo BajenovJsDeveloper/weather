@@ -27,18 +27,51 @@ class WeatherData {
     return null;
   }
 
+  getRain(){
+    if (this.#initialize){
+      const resultArr = this.#data.list.map(i =>{
+        let rain = (i.rain)? i.rain['3h'] : 0;
+        return [Math.round(i.pop*100), rain]
+      } )
+      return resultArr;
+    }
+  }
+
+  getWind(){
+    if (this.#initialize){
+      const resultArr = this.#data.list.map(i =>{
+        return [i.wind.deg, i.wind.speed];
+      } )
+      return resultArr;
+    }
+  }
+
+  getTemperatures(){
+    if(this.#initialize){
+      return this.#data.list.map((i) => Math.round(i.main.temp - 273));
+    }
+  }
+
   getIcon(opt = 0) {
     if (this.#initialize) {
-      return this.#listDateArray[this.#currentDay].weather[0].icon;
+      if(this.#currentDay === 0) 
+        return this.#listDateArray[this.#currentDay].weather[0].icon;
+      else{
+        const date = this.#listDateArray[this.#currentDay].dt_txt;
+        const newArr = this.getWeatherHourly(date);
+        const middleItem = Math.floor(newArr.length / 2);
+        const img = newArr[middleItem].weather[0].icon;
+        return img;
+      } 
     }
-    return null;
+    return '';
   }
 
   getCity() {
     if (this.#initialize) {
       return this.#data.city.name;
     }
-    return null;
+    return '';
   }
 
   getWeatherHourly(date) {
@@ -117,7 +150,7 @@ class WeatherData {
   }
 
   nextDate() {
-    if (this.#initialize && this.#currentDay < 6) {
+    if (this.#initialize && this.#currentDay < 5) {
       this.#currentDay++;
       return true;
     }
