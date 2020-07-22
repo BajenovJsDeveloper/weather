@@ -27,42 +27,41 @@ class WeatherData {
     return null;
   }
 
-  getRain(){
-    if (this.#initialize){
-      const resultArr = this.#data.list.map(i =>{
-        let rain = (i.rain)? i.rain['3h'] : 0;
-        return [Math.round(i.pop*100), rain]
-      } )
+  getRain() {
+    if (this.#initialize) {
+      const resultArr = this.#data.list.map((i) => {
+        const rain = i.rain ? i.rain['3h'] : 0;
+        return [Math.round(i.pop * 100), rain];
+      });
       return resultArr;
     }
+    return [null, null];
   }
 
-  getWind(){
-    if (this.#initialize){
-      const resultArr = this.#data.list.map(i =>{
-        return [i.wind.deg, i.wind.speed];
-      } )
+  getWind() {
+    if (this.#initialize) {
+      const resultArr = this.#data.list.map((i) => [i.wind.deg, i.wind.speed]);
       return resultArr;
     }
+    return [null, null];
   }
 
-  getTemperatures(){
-    if(this.#initialize){
+  getTemperatures() {
+    if (this.#initialize) {
       return this.#data.list.map((i) => Math.round(i.main.temp - 273));
     }
+    return [null];
   }
 
   getIcon(opt = 0) {
     if (this.#initialize) {
-      if(this.#currentDay === 0) 
-        return this.#listDateArray[this.#currentDay].weather[0].icon;
-      else{
-        const date = this.#listDateArray[this.#currentDay].dt_txt;
-        const newArr = this.getWeatherHourly(date);
-        const middleItem = Math.floor(newArr.length / 2);
-        const img = newArr[middleItem].weather[0].icon;
-        return img;
-      } 
+      if (this.#currentDay === 0) return this.#listDateArray[this.#currentDay].weather[0].icon;
+
+      const date = this.#listDateArray[this.#currentDay].dt_txt;
+      const newArr = this.getWeatherHourly(date);
+      const middleItem = Math.floor(newArr.length / 2);
+      const img = newArr[middleItem].weather[0].icon;
+      return img;
     }
     return '';
   }
@@ -157,26 +156,7 @@ class WeatherData {
     return false;
   }
 
-  // getCurDateTime(format) {
-  //   if (this.#initialize) {
-  //     const newDate = new Date(this.#listDateArray[this.#currentDay].dt_txt);
-  //     const option = { day: 'numeric', month: 'long', year: 'numeric' };
-  //     switch (format) {
-  //       case 'DMY':
-  //         // option.weekday = 'long';
-  //         return newDate.toLocaleDateString('en-US', option);
-  //       case 'DMYhm':
-  //         option.minute = '2-digit';
-  //         option.hour = '2-digit';
-  //         option.hour12 = false;
-  //         return newDate.toLocaleDateString('en-US', option);
-  //       default:
-  //         return '';
-  //     }
-  //   }
-  //   return '';
-  // }
-
+  
   getDayOfWeek() {
     if (this.#initialize) {
       const newDate = new Date(this.#listDateArray[this.#currentDay].dt_txt);

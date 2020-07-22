@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './main.scss';
+import '../main.scss';
 import * as axios from 'axios';
 import {
   Route, Switch, Redirect, useHistory,
@@ -7,30 +7,30 @@ import {
 import Weather from './Weather';
 import Grafic from './Grafic';
 import Hourly from './Hourly';
-import loadingSpin from './Rolling-1s-200px.png';
+import loadingSpin from '../img/Rolling-1s-200px.png';
 import Mycontext from './MyContext';
 
 const WeatherDayDisc = (props) => {
-  const { wdDiscr, hdlClickGrafic } = props;
+  const { dayDiscr, hdlClickGrafic } = props;
   return (
     <React.Fragment>
       <div className="mam-img">
         <img
           alt="w-img"
-          src={`https://openweathermap.org/img/wn/${wdDiscr.curTimeWeatherImg}@2x.png`}
+          src={`https://openweathermap.org/img/wn/${dayDiscr.curTimeWeatherImg}@2x.png`}
         />
       </div>
       <div className="mamh-temp">
-        <p>{`${wdDiscr.temperature}`}</p>
+        <p>{`${dayDiscr.temperature}`}</p>
       </div>
       <small>&deg;C</small>
       <div className="mamh-info">
-        <p>{`Chance of rain: ${wdDiscr.pop}%`}</p>
-        <p>{`Humidity: ${wdDiscr.humidity}%`}</p>
-        <p>{`Wind: ${wdDiscr.windSpeed}m/s`}</p>
-        <button onClick={()=>hdlClickGrafic(0)}>Temperature</button>
-        <button onClick={()=>hdlClickGrafic(1)}>Chance of rain</button>
-        <button onClick={()=>hdlClickGrafic(2)}>Wind</button>
+        <p>{`Chance of rain: ${dayDiscr.pop}%`}</p>
+        <p>{`Humidity: ${dayDiscr.humidity}%`}</p>
+        <p>{`Wind: ${dayDiscr.windSpeed}m/s`}</p>
+        <button onClick={() => hdlClickGrafic(0)}>Temperature</button>
+        <button onClick={() => hdlClickGrafic(1)}>Chance of rain</button>
+        <button onClick={() => hdlClickGrafic(2)}>Wind</button>
       </div>
     </React.Fragment>
   );
@@ -40,8 +40,9 @@ const WeatherGrafic = React.memo((props) => {
   const { graficArray, curItemId, graficId } = props;
   const ref = React.createRef();
 
+
   useEffect(() => {
-    Grafic.init(600, 130, 3600, ref.current, graficId);
+    Grafic.init(600, 130, 5, ref.current, graficId);
     Grafic.draw(graficArray.arr);
   }, [graficArray.arr, graficId]);
 
@@ -51,7 +52,7 @@ const WeatherGrafic = React.memo((props) => {
 
   return (
     <React.Fragment>
-      <canvas width="3600px" height="130px" id="grafic" ref={ref}></canvas>
+      <canvas id="grafic" ref={ref}></canvas>
     </React.Fragment>
   );
 });
@@ -60,7 +61,7 @@ const WeatherForDay = React.memo((props) => {
   const { dataList, curItemId, timeLineId } = props;
 
   Hourly.init(dataList, curItemId);
-  const wdDiscr = {
+  const dayDiscr = {
     weekDay: Hourly.getWeekDay(),
     humidity: Hourly.getHumidity(timeLineId),
     temperature: Hourly.getMaxTemp(timeLineId),
@@ -71,29 +72,27 @@ const WeatherForDay = React.memo((props) => {
   };
 
   return (
-      
-      <Mycontext.Consumer>
-        {(value) => (
-          <React.Fragment>
-            <div className="mam-header">
-              <WeatherDayDisc wdDiscr={wdDiscr} 
-                              hdlClickGrafic={value.hdlClickGrafic}/>
-            </div>
-            <div className="mam-graf">
-              <WeatherGrafic graficArray={value.graficArray} 
-                             graficId={value.graficId}
-                             curItemId={curItemId} />
-            </div>
-          </React.Fragment>)
-        }
-      </Mycontext.Consumer>
+    <Mycontext.Consumer>
+      {(value) => (
+        <React.Fragment>
+          <div className="mam-header">
+            <WeatherDayDisc dayDiscr={dayDiscr} hdlClickGrafic={value.hdlClickGrafic} />
+          </div>
+          <div className="mam-graf">
+            <WeatherGrafic
+              graficArray={value.graficArray}
+              graficId={value.graficId}
+              curItemId={curItemId}
+            />
+          </div>
+        </React.Fragment>
+      )}
+    </Mycontext.Consumer>
   );
 });
 
 const WeatherCards = React.memo((props) => {
   const { dataList, handleClick, curItemId } = props;
-  const MIN = 0;
-  const MAX = 1;
 
   return (
     <div className="card-list">
@@ -101,10 +100,7 @@ const WeatherCards = React.memo((props) => {
         const active = curItemId === idx ? 'active' : '';
         const [tempMin, tempMax] = item.temp;
         return (
-          <div className={`card ${active}`} 
-            key={idx} 
-            id={idx} 
-            onClick={() => handleClick(idx)}>
+          <div className={`card ${active}`} key={idx} id={idx} onClick={() => handleClick(idx)}>
             <p className="card-day">{item.day.slice(0, 3)}</p>
             <img
               src={`https://openweathermap.org/img/wn/${item.img}@2x.png`}
@@ -144,7 +140,7 @@ const Main = React.memo((props) => {
     '/weather-page/sunday/',
   ];
 
-  const [description, setDescription] = useState(''); 
+  const [description, setDescription] = useState('');
   const defaultPage = dataList ? dataList[0].day.toLowerCase() : '';
 
   useEffect(() => {
@@ -241,11 +237,10 @@ function App(props) {
     history.push(`/weather-page/${dataList[itemId].day.toLowerCase()}`);
   };
 
-  const hdlClickGrafic = (itemId) =>{
-    console.log('click...',itemId)
-    const obj = {arr: null, tshift: Weather.getShift()}
-    if(!loading){
-      switch(itemId){
+  const hdlClickGrafic = (itemId) => {
+    const obj = { arr: null, tshift: Weather.getShift() };
+    if (!loading) {
+      switch (itemId) {
         case 0:
           obj.arr = Weather.getTemperatures();
           break;
@@ -260,8 +255,8 @@ function App(props) {
       }
       setGrafic(obj);
       setGraficId(itemId);
-    }  
-  }
+    }
+  };
 
   const timeClick = (id) => {
     setTimelineId(id);
@@ -284,10 +279,9 @@ function App(props) {
     axios
       .get(url)
       .then((response) => {
-        console.log(response);
         if (response.statusText === 'OK') {
           try {
-            //--- initializng weather Class with some methods
+            // --- initializng weather Class with some methods
             Weather.init(response.data);
             // -- getting array of 5 elements by sequance with  date and weather
             // -- [{date:..., },{date + 1:..., },...]
@@ -305,7 +299,7 @@ function App(props) {
                 // -- ["00:00","03:00","06:00"...]
                 hourly: Weather.getWeatherHourly(item.dt_txt),
               };
-              //-- jump to the next date in list
+              // -- jump to the next date in list
               Weather.nextDate();
               return obj;
             });
@@ -369,7 +363,7 @@ const TimeLine = (props) => {
   let active = '';
   return (
     <React.Fragment>
-      {timeLine.map((i, id) => { 
+      {timeLine.map((i, id) => {
         if (len < timeLineId) active = len === id ? 'active' : '';
         else active = timeLineId === id ? 'active' : '';
         return (

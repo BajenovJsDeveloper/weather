@@ -17,16 +17,7 @@ class HourlyList {
       return result[id];
     }
     return result[result.length - 1];
-  };
-
-  // getPpressure(id) {
-  //   // console.log('get preasure id: ',id)
-  //   if (this._init) {
-  //     const pressure = this.#getListArr((i) => i.main.pressure, id);
-  //     return pressure;
-  //   }
-  //   return null;
-  // }
+  }
 
   getWeekDay() {
     if (this._init) {
