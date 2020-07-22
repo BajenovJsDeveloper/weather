@@ -1,4 +1,4 @@
-import Weather from './Weather.js';
+import w from '../Components/Weather.js';
 
 describe('Testing wether method .getSize()', () => {
   const data = { list: [] };
@@ -13,11 +13,10 @@ describe('Testing wether method .getSize()', () => {
   data.list.push({ main: { temp: 10 }, dt_txt: new Date('2020 5 28 12:00:00') });
   data.list.push({ main: { temp: 10 }, dt_txt: new Date('2020 5 28 15:00:00') });
 
-  const _ = new Weather();
-  _.init(data);
+  w().init(data);
 
   test('will return size of array  26', () => {
-    expect(_.getSize()).toBe(26);
+    expect(w.getSize()).toBe(26);
   });
 });
 
@@ -25,15 +24,15 @@ describe('Testing weather method .getMinMaxTemp()', () => {
   const newDate = new Date('2020 8 7 19:00:00');
   const j = new Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
   const data = { list: [] };
-  const _ = new Weather();
+  
 
   j.forEach(i => {
     data.list.push({ main: { temp: i + 273 }, dt_txt: new Date('2020 8 7 19:00:00') });
   });
-  _.init(data);
+  w().init(data);
   test('Will return Array [1, 10]', () => {
-    expect(_.getMinMaxTemp()).toContain(1);
-    expect(_.getMinMaxTemp()).toContain(10);
-    expect(_.getMinMaxTemp()).not.toContain(null);
+    expect(w.getMinMaxTemp()).toContain(1);
+    expect(w.getMinMaxTemp()).toContain(10);
+    expect(w.getMinMaxTemp()).not.toContain(null);
   });
 });
