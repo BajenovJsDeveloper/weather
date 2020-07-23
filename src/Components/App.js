@@ -11,24 +11,22 @@ import loadingSpin from '../img/Rolling-1s-200px.png';
 import Mycontext from './MyContext';
 
 const ButtonsNav = (props) => {
-  const { hdlClickGrafic } = props;
-  const [active, setActive] = useState(0);
+  const { hdlClickGrafic, butonId } = props;
 
   const btnClick = (id) => {
-    setActive(id);
     hdlClickGrafic(id);
     console.log('click...');
   };
 
   return (
     <React.Fragment>
-      <button className={active === 0 ? 'active' : ''} onClick={() => btnClick(0)}>
+      <button className={butonId === 0 ? 'active' : ''} onClick={() => btnClick(0)}>
         Temperature
       </button>
-      <button className={active === 1 ? 'active' : ''} onClick={() => btnClick(1)}>
+      <button className={butonId === 1 ? 'active' : ''} onClick={() => btnClick(1)}>
         Chance of rain
       </button>
-      <button className={active === 2 ? 'active' : ''} onClick={() => btnClick(2)}>
+      <button className={butonId === 2 ? 'active' : ''} onClick={() => btnClick(2)}>
         Wind
       </button>
     </React.Fragment>
@@ -36,7 +34,7 @@ const ButtonsNav = (props) => {
 };
 
 const WeatherDayDisc = (props) => {
-  const { dayDiscr, hdlClickGrafic } = props;
+  const { dayDiscr } = props;
 
   return (
     <React.Fragment>
@@ -55,7 +53,7 @@ const WeatherDayDisc = (props) => {
         <p>{`Humidity: ${dayDiscr.humidity}%`}</p>
         <p>{`Wind: ${dayDiscr.windSpeed}m/s`}</p>
         <Mycontext.Consumer>
-          {(value) => <ButtonsNav hdlClickGrafic={value.hdlClickGrafic} />}
+          {(value) => <ButtonsNav hdlClickGrafic={value.hdlClickGrafic} butonId={value.graficId} />}
         </Mycontext.Consumer>
       </div>
     </React.Fragment>
@@ -101,7 +99,7 @@ const WeatherForDay = React.memo((props) => {
       {(value) => (
         <React.Fragment>
           <div className="mam-header">
-            <WeatherDayDisc dayDiscr={dayDiscr} hdlClickGrafic={value.hdlClickGrafic} />
+            <WeatherDayDisc dayDiscr={dayDiscr} />
           </div>
           <div className="mam-graf">
             <WeatherGrafic
