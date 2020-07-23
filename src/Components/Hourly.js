@@ -17,7 +17,7 @@ class HourlyList {
       return result[id];
     }
     return result[result.length - 1];
-  }
+  };
 
   getWeekDay() {
     if (this._init) {

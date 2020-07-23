@@ -7,9 +7,9 @@ class GraficsTWP {
     this.k = Math.round(width / 8);
     this.grafId = grafId;
     this.len = width * len;
-    //-- setup canvas width and heigth
-    elem.width = width * len;
-    elem.height = height;
+    // -- setup canvas width and heigth
+    this.elem.width = width * len;
+    this.elem.height = height;
   }
 
   slide(id, tshift) {
@@ -39,12 +39,12 @@ class GraficsTWP {
         let minimum = Math.min(...arr);
         const max = Math.max(...arr);
         const min = Math.min(...arr);
-        //-- zooming grafic if temperatures > 45 deg or < -30 deg. 
-        if(max > 30 && max < 45) multY = 2;
-        if(min <=0 && min >= -30) multY = 2;
-        if(max >= 45 || min < -30) multY = 1;
-        //-- seek minimum in temps array (it is for temperatures which low then 0 deg.)
-        if(minimum < 0) minimum = Math.abs(minimum) * multY + 10;
+        // -- zooming grafic if temperatures > 45 deg or < -30 deg.
+        if (max > 30 && max < 45) multY = 2;
+        if (min <= 0 && min >= -30) multY = 2;
+        if (max >= 45 || min < -30) multY = 1;
+        // -- seek minimum in temps array (it is for temperatures which low then 0 deg.)
+        if (minimum < 0) minimum = Math.abs(minimum) * multY + 10;
         else minimum = 10;
 
         ctx.strokeStyle = '#ffcc00';
@@ -70,11 +70,11 @@ class GraficsTWP {
         offsetX = k;
         arr.forEach((i, idx) => {
           ctx.beginPath();
-          //-- color blue if temp <= 0
-          if(i <= 0) ctx.fillStyle = 'blue';
-          //-- color red if temp > 32
-          else if(i > 32) ctx.fillStyle = 'red';
-          //-- color default
+          // -- color blue if temp <= 0
+          if (i <= 0) ctx.fillStyle = 'blue';
+          // -- color red if temp > 32
+          else if (i > 32) ctx.fillStyle = 'red';
+          // -- color default
           else ctx.fillStyle = '#aaa';
           ctx.font = '12px';
           // -- text temperatures
@@ -140,7 +140,7 @@ class GraficsTWP {
           ctx.fillStyle = '#c6c6c6';
           ctx.translate(X + offsetX, Y);
           ctx.rotate(((360 - deg) * Math.PI) / 180);
-          //-- darw arrow 
+          // -- darw arrow
           ctx.moveTo(-9, -9);
           ctx.lineTo(9, 0);
           ctx.lineTo(-9, 9);
@@ -153,7 +153,9 @@ class GraficsTWP {
           ctx.closePath();
         });
       }
+      return true;
     }
+    return false;
   }
 }
 // -- grafics Temperature, Wind, Precipitations

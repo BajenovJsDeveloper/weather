@@ -10,8 +10,34 @@ import Hourly from './Hourly';
 import loadingSpin from '../img/Rolling-1s-200px.png';
 import Mycontext from './MyContext';
 
+const ButtonsNav = (props) => {
+  const { hdlClickGrafic } = props;
+  const [active, setActive] = useState(0);
+
+  const btnClick = (id) => {
+    setActive(id);
+    hdlClickGrafic(id);
+    console.log('click...');
+  };
+
+  return (
+    <React.Fragment>
+      <button className={active === 0 ? 'active' : ''} onClick={() => btnClick(0)}>
+        Temperature
+      </button>
+      <button className={active === 1 ? 'active' : ''} onClick={() => btnClick(1)}>
+        Chance of rain
+      </button>
+      <button className={active === 2 ? 'active' : ''} onClick={() => btnClick(2)}>
+        Wind
+      </button>
+    </React.Fragment>
+  );
+};
+
 const WeatherDayDisc = (props) => {
   const { dayDiscr, hdlClickGrafic } = props;
+
   return (
     <React.Fragment>
       <div className="mam-img">
@@ -28,9 +54,9 @@ const WeatherDayDisc = (props) => {
         <p>{`Chance of rain: ${dayDiscr.pop}%`}</p>
         <p>{`Humidity: ${dayDiscr.humidity}%`}</p>
         <p>{`Wind: ${dayDiscr.windSpeed}m/s`}</p>
-        <button onClick={() => hdlClickGrafic(0)}>Temperature</button>
-        <button onClick={() => hdlClickGrafic(1)}>Chance of rain</button>
-        <button onClick={() => hdlClickGrafic(2)}>Wind</button>
+        <Mycontext.Consumer>
+          {(value) => <ButtonsNav hdlClickGrafic={value.hdlClickGrafic} />}
+        </Mycontext.Consumer>
       </div>
     </React.Fragment>
   );
@@ -39,7 +65,6 @@ const WeatherDayDisc = (props) => {
 const WeatherGrafic = React.memo((props) => {
   const { graficArray, curItemId, graficId } = props;
   const ref = React.createRef();
-
 
   useEffect(() => {
     Grafic.init(600, 130, 5, ref.current, graficId);

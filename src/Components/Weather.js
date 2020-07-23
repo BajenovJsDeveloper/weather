@@ -156,7 +156,6 @@ class WeatherData {
     return false;
   }
 
-  
   getDayOfWeek() {
     if (this.#initialize) {
       const newDate = new Date(this.#listDateArray[this.#currentDay].dt_txt);
@@ -166,4 +165,5 @@ class WeatherData {
   }
 }
 const Weather = new WeatherData();
+// const Weather = WeatherData;
 export default Weather;

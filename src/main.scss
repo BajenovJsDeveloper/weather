@@ -12,6 +12,12 @@ $color3: rgba(50, 50, 50, 1);
 $backColor: rgba(249, 248, 222, 1);
 $focusColor: rgba(255, 255, 174, 1);
 $activeColor: rgba(255, 250, 175, 1);
+@mixin active{
+  background-color: $focusColor;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 #grafic{
   position: relative;
   top:0;
@@ -107,11 +113,12 @@ body{
             border: 1px solid #e1e1e1;
             border-radius: 2px;
             color: $color3;
+            cursor: pointer;
             &:hover{
               box-shadow: 0 0 2px black;
             }
-            &:focus{
-              background-color: $focusColor;
+            &.active{
+              @include active;
             }
           }
         }
@@ -133,7 +140,7 @@ body{
         padding:5px 10px;
         cursor:pointer;
         &.active{
-          background-color: $activeColor;
+          @include active;
         }
       }
     }
@@ -170,7 +177,7 @@ body{
           
         }
         & .active{
-          background-color: $activeColor;
+          @include active;
           border:1px solid rgba(0, 20, 0, 0.1);
         }
       }
