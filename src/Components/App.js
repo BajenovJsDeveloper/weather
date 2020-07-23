@@ -179,14 +179,17 @@ const Main = React.memo((props) => {
       {loading && <Loading />}
       {!loading && (
         <React.Fragment>
-          <header className="ma-header">
-            <p className="ma-header-city">{city}</p>
-            <p className="ma-header-day">
-              {dataList[curItemId].day}
-              <span>{curItemId === 0 ? time : ''}</span>
-            </p>
-            <p>{description}</p>
-          </header>
+          <Mycontext.Consumer>
+          { value =>(
+            <header className="ma-header">
+              <p className="ma-header-city">{city}</p>
+              <p className="ma-header-day">
+                {dataList[curItemId].day}
+                <span>{(curItemId === 0)? time : value.timeLine[value.timeLineId]}</span>
+              </p>
+              <p>{description}</p>
+            </header>)}
+          </Mycontext.Consumer>
           <div className="ma-main">
             <Switch>
               <Route
@@ -198,8 +201,8 @@ const Main = React.memo((props) => {
                       <WeatherForDay
                         dataList={dataList}
                         graficArray={value.graficArray}
-                        timeLineId={timeLineId}
-                        curItemId={curItemId}
+                        timeLineId={value.timeLineId}
+                        curItemId={value.curItemId}
                       />
                     )}
                   </Mycontext.Consumer>
@@ -224,7 +227,7 @@ const Main = React.memo((props) => {
               {(value) => (
                 <WeatherCards
                   dataList={dataList}
-                  curItemId={curItemId}
+                  curItemId={value.curItemId}
                   handleClick={value.handleClick}
                 />
               )}
@@ -235,6 +238,25 @@ const Main = React.memo((props) => {
     </div>
   );
 });
+
+const TimeLine = (props) => {
+  const { timeLine, timeClick, timeLineId } = props;
+  const len = timeLine.length - 1;
+  let active = '';
+  return (
+    <React.Fragment>
+      {timeLine.map((i, id) => {
+        if (len < timeLineId) active = len === id ? 'active' : '';
+        else active = timeLineId === id ? 'active' : '';
+        return (
+          <div key={i} onClick={() => timeClick(id)} className={`mat-item ${active}`}>
+            <span>{i}</span>
+          </div>
+        );
+      })}
+    </React.Fragment>
+  );
+};
 
 function App(props) {
   const [loading, setLoading] = useState(true);
@@ -380,23 +402,6 @@ function App(props) {
   );
 }
 
-const TimeLine = (props) => {
-  const { timeLine, timeClick, timeLineId } = props;
-  const len = timeLine.length - 1;
-  let active = '';
-  return (
-    <React.Fragment>
-      {timeLine.map((i, id) => {
-        if (len < timeLineId) active = len === id ? 'active' : '';
-        else active = timeLineId === id ? 'active' : '';
-        return (
-          <div key={i} onClick={() => timeClick(id)} className={`mat-item ${active}`}>
-            <span>{i}</span>
-          </div>
-        );
-      })}
-    </React.Fragment>
-  );
-};
+
 
 export default App;
