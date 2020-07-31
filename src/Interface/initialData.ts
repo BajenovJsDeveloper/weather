@@ -60,3 +60,42 @@ export const dataInit = [
     },
   },
 ];
+
+export const listInit = [
+  { dt_txt: '',
+    weather: [
+      { icon: '',
+        description: '' 
+      }
+    ] 
+  }
+];
+
+export const weatherDataInit = {
+  city: {
+    name: '',
+  },
+  list: [
+    {
+      main: {
+        temp: 0,
+        humidity: 0,
+      },
+      dt_txt: '',
+      wind: {
+        deg: 0,
+        speed: 0,
+      },
+      rain: {
+        '3h': 0,
+      },
+      pop: 0,
+      weather: [
+        {
+          icon: '',
+          description: '',
+        },
+      ],
+    },
+  ],
+};

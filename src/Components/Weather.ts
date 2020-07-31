@@ -1,72 +1,74 @@
-interface IList_Item {
-  dt_txt: string;
-  weather: Array<{ description: string }>;
-}
+import { listInit, weatherDataInit } from '../Interface/initialData';
+import { IWeatherData } from '../Interface/Interface';
+// interface IList_Item {
+//   dt_txt: string;
+//   weather: Array<{ description: string }>;
+// }
 
-export interface ImiddleObj {
-  wind: number;
-  pop: number;
-  description: string;
-  temp: number;
-  img: string;
-  hum: number;
-}
+// export interface ImiddleObj {
+//   wind: number;
+//   pop: number;
+//   description: string;
+//   temp: number;
+//   img: string;
+//   hum: number;
+// }
 
-interface IWeatherData {
-  _currentDay: number;
-  _initialDay: number;
-  _initialize: boolean;
-  _data: typeof dataInit;
-  _listDateArray: any;
-  _firstDayTimeShift: number;
-  _convertToC: (temp: number) => number;
-  _convertToF: (temp: number) => number;
-  getShift: () => number;
-  getSize: () => number | null;
-  getRain: () => Array<Array<number>>;
-  getWind: () => Array<Array<number>>;
-  getTemperatures: () => Array<number>;
-  getIcon: () => string;
-  getCity: () => string;
-  getMiddle: (date: string) => ImiddleObj;
-  getWeatherHourly(date: any, isfull?: boolean): Array<IList_Item>;
-  getMinMaxTemp(option: 'C' | 'F'): number[];
-  getDateArray5: () => typeof listInit;
-  init(data: any): boolean;
-  nextDate(): boolean;
-  getDayOfWeek(): string;
-}
+// interface IWeatherData {
+//   _currentDay: number;
+//   _initialDay: number;
+//   _initialize: boolean;
+//   _data: typeof dataInit;
+//   _listDateArray: any;
+//   _firstDayTimeShift: number;
+//   _convertToC: (temp: number) => number;
+//   _convertToF: (temp: number) => number;
+//   getShift: () => number;
+//   getSize: () => number | null;
+//   getRain: () => Array<Array<number>>;
+//   getWind: () => Array<Array<number>>;
+//   getTemperatures: () => Array<number>;
+//   getIcon: () => string;
+//   getCity: () => string;
+//   getMiddle: (date: string) => ImiddleObj;
+//   getWeatherHourly(date: any, isfull?: boolean): Array<IList_Item>;
+//   getMinMaxTemp(option: 'C' | 'F'): number[];
+//   getDateArray5: () => typeof listInit;
+//   init(data: any): boolean;
+//   nextDate(): boolean;
+//   getDayOfWeek(): string;
+// }
 
-const dataInit = {
-  city: {
-    name: '',
-  },
-  list: [
-    {
-      main: {
-        temp: 0,
-        humidity: 0,
-      },
-      dt_txt: '',
-      wind: {
-        deg: 0,
-        speed: 0,
-      },
-      rain: {
-        '3h': 0,
-      },
-      pop: 0,
-      weather: [
-        {
-          icon: '',
-          description: '',
-        },
-      ],
-    },
-  ],
-};
+// const weatherDataInit = {
+//   city: {
+//     name: '',
+//   },
+//   list: [
+//     {
+//       main: {
+//         temp: 0,
+//         humidity: 0,
+//       },
+//       dt_txt: '',
+//       wind: {
+//         deg: 0,
+//         speed: 0,
+//       },
+//       rain: {
+//         '3h': 0,
+//       },
+//       pop: 0,
+//       weather: [
+//         {
+//           icon: '',
+//           description: '',
+//         },
+//       ],
+//     },
+//   ],
+// };
 
-const listInit = [{ dt_txt: '', weather: [{ icon: '', description: '' }] }];
+// const listInit = [{ dt_txt: '', weather: [{ icon: '', description: '' }] }];
 
 class WeatherData {
   _currentDay = 0;
@@ -75,7 +77,7 @@ class WeatherData {
 
   _initialize = false;
 
-  _data = dataInit;
+  _data = weatherDataInit;
 
   _listDateArray = listInit;
 
@@ -91,7 +93,7 @@ class WeatherData {
     this._currentDay = 0;
     this._initialDay = 1;
     this._initialize = false;
-    this._data = dataInit;
+    this._data = weatherDataInit;
     this._listDateArray = listInit;
     this._firstDayTimeShift = 0;
   }

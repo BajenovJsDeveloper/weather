@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import '../main.scss';
 import axios from 'axios';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
-import Weather, { ImiddleObj } from './Weather';
+import Weather from './Weather';
 import Grafic from './Grafic';
 import Hourly from './Hourly';
 import loadingSpin from '../img/Rolling-1s-200px.png';
-import Mycontext, { IContextProps, IObjGrafic } from './MyContext';
+import Mycontext from './MyContext';
 import { initialData, dataInit } from '../Interface/initialData';
 import {
   IButtonsNavProps,
@@ -22,6 +22,9 @@ import {
   IHourly,
   IWeatherList,
   IObj,
+  IContextProps,
+  IObjGrafic,
+
 } from '../Interface/Interface';
 
 const graficInit: IObjGrafic = {
@@ -34,7 +37,6 @@ const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
 
   const btnClick: (id: number) => void = id => {
     hdlClickGrafic(id);
-    console.log('click...');
   };
 
   return (

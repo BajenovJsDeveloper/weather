@@ -1,6 +1,45 @@
-import { dataInit } from './initialData';
-import { IObjGrafic } from '../Components/MyContext';
-import { ImiddleObj } from '../Components/Weather';
+import { dataInit, listInit, weatherDataInit } from './initialData';
+
+
+interface IList_Item {
+  dt_txt: string;
+  weather: Array<{ description: string }>;
+}
+
+export interface ImiddleObj {
+  wind: number;
+  pop: number;
+  description: string;
+  temp: number;
+  img: string;
+  hum: number;
+}
+
+export interface IWeatherData {
+  _currentDay: number;
+  _initialDay: number;
+  _initialize: boolean;
+  _data: typeof weatherDataInit;
+  _listDateArray: any;
+  _firstDayTimeShift: number;
+  _convertToC: (temp: number) => number;
+  _convertToF: (temp: number) => number;
+  getShift: () => number;
+  getSize: () => number | null;
+  getRain: () => Array<Array<number>>;
+  getWind: () => Array<Array<number>>;
+  getTemperatures: () => Array<number>;
+  getIcon: () => string;
+  getCity: () => string;
+  getMiddle: (date: string) => ImiddleObj;
+  getWeatherHourly(date: any, isfull?: boolean): Array<IList_Item>;
+  getMinMaxTemp(option: 'C' | 'F'): number[];
+  getDateArray5: () => typeof listInit;
+  init(data: any): boolean;
+  nextDate(): boolean;
+  getDayOfWeek(): string;
+}
+
 
 export interface IButtonsNavProps {
   butonId: number;
@@ -73,4 +112,20 @@ export interface IWeatherList {
 export interface IObj {
   arr: number[] | number[][];
   tshift: number;
+}
+
+export interface IObjGrafic {
+  arr: Array<Array<number>> | Array<number>;
+  tshift: number;
+}
+
+export interface IContextProps {
+  graficArray: IObjGrafic;
+  curItemId: number;
+  handleClick: (id: number) => void;
+  timeClick: (id: number) => void;
+  timeLine: Array<string>;
+  timeLineId: number | null;
+  graficId: number;
+  hdlClickGrafic: (id: number) => void;
 }
