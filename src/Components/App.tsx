@@ -34,6 +34,15 @@ const graficInit: IObjGrafic = {
 
 const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
   const { hdlClickGrafic, butonId } = props;
+  const namesObj = {
+    'temp':'Temperature',
+    'rain':'Chance of rain',
+    'wind':'Wind',
+    };
+  const buttonsNames = Object.keys(namesObj);
+  const buttonsHtmlText = Object.values(namesObj)
+  const activeButton = buttonsNames[butonId];
+  
 
   const btnClick: (id: number) => void = id => {
     hdlClickGrafic(id);
@@ -41,17 +50,16 @@ const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
 
   return (
     <>
-      <button name="temp" disabled={butonId === 0 ? true : false} onClick={() => btnClick(0)}>
-        Temperature
-      </button>
-      <button name="rain" disabled={butonId === 1 ? true : false} onClick={() => btnClick(1)}>
-        Chance of rain
-      </button>
-      <button name="wind" disabled={butonId === 2 ? true : false} onClick={() => btnClick(2)}>
-        Wind
-      </button>
-    </>
-  );
+      {buttonsNames.map((btn:string,idx:number) => (<button 
+        name={btn} 
+        disabled={activeButton === btn ? true : false} 
+        onClick={() => btnClick(idx)}>
+              { buttonsHtmlText[idx] }
+            </button>
+          ))
+      }
+    </>  
+    )
 };
 
 const WeatherDayDisc: React.FC<IdayDiscr> = (props: IdayDiscr) => {
