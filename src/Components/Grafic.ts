@@ -1,18 +1,19 @@
 import React from 'react';
+import { GraficsTWP } from '../Interface/Interface'
 
-interface GrafTWP {
-  elem: React.RefObject<HTMLCanvasElement>;
-  width: number | undefined;
-  init(
-    width: number,
-    height: number,
-    len: number,
-    elem: React.RefObject<HTMLCanvasElement> | null,
-    grafId: number | undefined,
-  ): void;
-  draw(arr: number[] | number[][]): boolean | number[];
-  slide(id: number, tshift: number): void;
-}
+// interface GrafTWP {
+//   elem: React.RefObject<HTMLCanvasElement>;
+//   width: number | undefined;
+//   init(
+//     width: number,
+//     height: number,
+//     len: number,
+//     elem: React.RefObject<HTMLCanvasElement> | null,
+//     grafId: number | undefined,
+//   ): void;
+//   draw(arr: number[] | number[][]): boolean | number[];
+//   slide(id: number, tshift: number): void;
+// }
 
 class GraficsTWP {
   width = 0;
@@ -86,13 +87,12 @@ class GraficsTWP {
 
         ctx.strokeStyle = '#ffcc00';
         ctx.lineWidth = 4;
-        ctx.fillStyle = '#fff5cc'; // grad;
+        ctx.fillStyle = '#fff5cc';
         ctx.beginPath();
         // -- draw first line
         ctx.moveTo(0, height);
         ctx.lineTo(0, height - arr1[0] * multY - minimum);
         // -- draw lines
-        // console.log(multY, minimum);
         arr1.forEach((i: number) => {
           ctx.lineTo(offsetX - k / 2, height - i * multY - minimum);
           offsetX += k;
@@ -102,7 +102,6 @@ class GraficsTWP {
         ctx.stroke();
         ctx.fill();
         // -- draw temperatures
-        // ctx.beginPath();
         ctx.textAlign = 'center';
         offsetX = k;
         arr1.forEach((i: number, idx: number) => {

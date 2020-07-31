@@ -1,5 +1,19 @@
 import { dataInit, listInit, weatherDataInit } from './initialData';
 
+export interface GrafTWP {
+  elem: React.RefObject<HTMLCanvasElement>;
+  width: number | undefined;
+  init(
+    width: number,
+    height: number,
+    len: number,
+    elem: React.RefObject<HTMLCanvasElement> | null,
+    grafId: number | undefined,
+  ): void;
+  draw(arr: number[] | number[][]): boolean | number[];
+  slide(id: number, tshift: number): void;
+}
+
 
 interface IList_Item {
   dt_txt: string;
