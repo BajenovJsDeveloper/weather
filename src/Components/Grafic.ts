@@ -1,5 +1,41 @@
+import React from 'react';
+
+interface GrafTWP {
+  elem: React.RefObject<HTMLCanvasElement>;
+  width: number | undefined;
+  init(
+    width: number,
+    height: number,
+    len: number,
+    elem: React.RefObject<HTMLCanvasElement> | null,
+    grafId: number | undefined,
+  ): void;
+  draw(arr: number[] | number[][]): boolean | number[];
+  slide(id: number, tshift: number): void;
+}
+
 class GraficsTWP {
-  init(width, height, len = 1, elem = null, grafId = 0) {
+  width = 0;
+
+  height = 0;
+
+  elem: any;
+
+  shift = 0;
+
+  k = 0;
+
+  grafId = 0;
+
+  len = 0;
+
+  init(
+    width = 600,
+    height = 130,
+    len = 1,
+    elem: React.RefObject<HTMLCanvasElement> | null,
+    grafId = 0,
+  ) {
     this.width = width;
     this.height = height;
     this.elem = elem;
@@ -12,7 +48,7 @@ class GraficsTWP {
     this.elem.height = height;
   }
 
-  slide(id, tshift) {
+  slide(id: number, tshift: number) {
     if (this.elem) {
       let shiftX;
       if (tshift > 0 && id !== 0) {
@@ -24,7 +60,7 @@ class GraficsTWP {
     }
   }
 
-  draw(arr) {
+  draw(arr: Array<number> | Array<Array<number>>) {
     const { k } = this;
     const canvas = this.elem;
     // arr = [-45, -47, -33, -20, 0, -7, -5,-15,10]
@@ -36,9 +72,10 @@ class GraficsTWP {
       if (this.grafId === 0) {
         let offsetX = k;
         let multY = 3;
-        let minimum = Math.min(...arr);
-        const max = Math.max(...arr);
-        const min = Math.min(...arr);
+        const arr1 = (arr as Array<number>).map(i => i);
+        let minimum = Math.min(...arr1);
+        const max = Math.max(...arr1);
+        const min = Math.min(...arr1);
         // -- zooming grafic if temperatures > 45 deg or < -30 deg.
         if (max > 30 && max < 45) multY = 2;
         if (min <= 0 && min >= -30) multY = 2;
@@ -53,10 +90,10 @@ class GraficsTWP {
         ctx.beginPath();
         // -- draw first line
         ctx.moveTo(0, height);
-        ctx.lineTo(0, height - arr[0] * multY - minimum);
+        ctx.lineTo(0, height - arr1[0] * multY - minimum);
         // -- draw lines
         // console.log(multY, minimum);
-        arr.forEach((i) => {
+        arr1.forEach((i: number) => {
           ctx.lineTo(offsetX - k / 2, height - i * multY - minimum);
           offsetX += k;
         });
@@ -68,7 +105,7 @@ class GraficsTWP {
         // ctx.beginPath();
         ctx.textAlign = 'center';
         offsetX = k;
-        arr.forEach((i, idx) => {
+        arr1.forEach((i: number, idx: number) => {
           ctx.beginPath();
           // -- color blue if temp <= 0
           if (i <= 0) ctx.fillStyle = 'blue';
@@ -92,7 +129,7 @@ class GraficsTWP {
         ctx.fillStyle = '#d2eaff';
         ctx.beginPath();
         // -- draw rectangles and lines
-        arr.forEach((i) => {
+        arr.forEach((i: any) => {
           const [corY] = i;
           ctx.fillRect(offsetX, height - corY, k, corY);
           ctx.beginPath();
@@ -106,7 +143,7 @@ class GraficsTWP {
         // -- set styles color and font height
         ctx.fillStyle = '#195bf7';
         ctx.font = '12px';
-        arr.forEach((i) => {
+        arr.forEach((i: any) => {
           const [corY] = i;
           let [pop, rain] = i;
           pop = `${pop.toString()}%`;
@@ -127,7 +164,7 @@ class GraficsTWP {
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 1;
         // -- Draw wind direction and speed
-        arr.forEach((i) => {
+        arr.forEach((i: any) => {
           let [deg, text] = i;
           text = `${text}m/s`.toString();
           deg = Number(deg);
@@ -159,5 +196,5 @@ class GraficsTWP {
   }
 }
 // -- grafics Temperature, Wind, Precipitations
-const Grafic = new GraficsTWP();
+const Grafic: GrafTWP = new GraficsTWP();
 export default Grafic;
