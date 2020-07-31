@@ -40,7 +40,7 @@ const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <button name="temp" disabled={butonId === 0 ? true : false} onClick={() => btnClick(0)}>
         Temperature
       </button>
@@ -50,7 +50,7 @@ const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
       <button name="wind" disabled={butonId === 2 ? true : false} onClick={() => btnClick(2)}>
         Wind
       </button>
-    </React.Fragment>
+    </>
   );
 };
 
