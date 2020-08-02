@@ -1,18 +1,17 @@
 import { hourlyInit, weatherDataInit } from '../Interface/initialData';
-import { IWeatherData } from '../Interface/Interface';
+import { IWeatherData } from '../Interface/Interfaces';
 
-
-const numberOfDaysInList:number = 5;
-const ZERO_KELVIN:number = 273;
-const FIRST:number = 0;
-const TIME_SHIFT:number = 8;
+const numberOfDaysInList: number = 5;
+const ZERO_KELVIN: number = 273;
+const FIRST: number = 0;
+const TIME_SHIFT: number = 8;
 
 class WeatherData {
-  _currentDay:number = 0;
+  _currentDay: number = 0;
 
-  _initialDay:number = 1;
+  _initialDay: number = 1;
 
-  _initialize:boolean = false;
+  _initialize: boolean = false;
 
   _data = weatherDataInit;
 
@@ -142,7 +141,7 @@ class WeatherData {
         const d1 = new Date(year, mon, this._initialDay + this._currentDay).getDate();
         if (d === d1) {
           temps.push(this._convertTempToC(item.main.temp));
-        }  
+        }
       });
       return [Math.min(...temps), Math.max(...temps)];
     }
@@ -150,7 +149,7 @@ class WeatherData {
   }
 
   getDatesList() {
-      return this._listDateArray;
+    return this._listDateArray;
   }
 
   init(data: any) {
@@ -164,7 +163,7 @@ class WeatherData {
       this._listDateArray = this._data.list.filter(item => {
         const dt = new Date(item.dt_txt).getDate();
         if (dt !== firstDay) {
-          firstDay = dt
+          firstDay = dt;
           return true;
         }
         return false;
@@ -172,8 +171,8 @@ class WeatherData {
       if (typeof this._listDateArray === 'object') {
         this._listDateArray = this._listDateArray.slice(0, numberOfDaysInList);
         this._initialize = true;
-      } 
-    } 
+      }
+    }
     return this._initialize;
   }
 

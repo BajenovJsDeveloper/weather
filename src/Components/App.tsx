@@ -26,7 +26,7 @@ import {
   IObj,
   IContextProps,
   IObjGrafic,
-} from '../Interface/Interface';
+} from '../Interface/Interfaces';
 
 const graficInit: IObjGrafic = {
   arr: [0],
@@ -36,14 +36,13 @@ const graficInit: IObjGrafic = {
 const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
   const { hdlClickGrafic, butonId } = props;
   const namesObj = {
-    'temp':'Temperature',
-    'rain':'Chance of rain',
-    'wind':'Wind',
-    };
+    temp: 'Temperature',
+    rain: 'Chance of rain',
+    wind: 'Wind',
+  };
   const buttonsNames = Object.keys(namesObj);
-  const buttonsHtmlText = Object.values(namesObj)
+  const buttonsHtmlText = Object.values(namesObj);
   const activeButton = buttonsNames[butonId];
-  
 
   const btnClick: (id: number) => void = id => {
     hdlClickGrafic(id);
@@ -51,17 +50,18 @@ const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
 
   return (
     <>
-      {buttonsNames.map((btn:string,idx:number) => (<button 
-        name={btn}
-        key={btn} 
-        disabled={activeButton === btn ? true : false} 
-        onClick={() => btnClick(idx)}>
-              { buttonsHtmlText[idx] }
-            </button>
-          ))
-      }
-    </>  
-    )
+      {buttonsNames.map((btn: string, idx: number) => (
+        <button
+          name={btn}
+          key={btn}
+          disabled={activeButton === btn ? true : false}
+          onClick={() => btnClick(idx)}
+        >
+          {buttonsHtmlText[idx]}
+        </button>
+      ))}
+    </>
+  );
 };
 
 const WeatherDayDisc: React.FC<IdayDiscr> = (props: IdayDiscr) => {
@@ -119,16 +119,14 @@ const WeatherForDay: React.FC<IWeatherForDayProps> = React.memo((props: IWeather
   Hourly.init(dataList, curItemId);
   const dayDiscr = {
     weekDay: Hourly.getWeekDay(),
-    humidity: 
-      timeLineId !== null ? Hourly.getHumidity(timeLineId) : dataList[curItemId].middle.hum,
+    humidity: timeLineId !== null ? Hourly.getHumidity(timeLineId) : dataList[curItemId].middle.hum,
     temperature:
       timeLineId !== null ? Hourly.getMaxTemp(timeLineId) : dataList[curItemId].middle.temp,
     windSpeed:
       timeLineId !== null ? Hourly.getWindSpeed(timeLineId) : dataList[curItemId].middle.wind,
     curTimeWeatherImg:
       timeLineId !== null ? Hourly.getCurImg(timeLineId) : dataList[curItemId].middle.img,
-    pop: 
-      timeLineId !== null ? Hourly.getPop(timeLineId) : dataList[curItemId].middle.pop,
+    pop: timeLineId !== null ? Hourly.getPop(timeLineId) : dataList[curItemId].middle.pop,
   };
 
   return (
@@ -365,28 +363,26 @@ function App(props: any) {
             // Weather.init(initialData);
             // -- getting array of 5 elements by sequance with  date and weather
             // -- [{date:..., },{date + 1:..., },...]
-            const weatherList: Array<IWeatherList> = Weather.getDatesList().map(
-              (item:IHourly) => {
-                const obj: IWeatherList = {
-                  // -- url of iamge
-                  img: Weather.getIcon(),
-                  // -- [min, max]
-                  temp: Weather.getMinMaxTemp(),
-                  // -- January, 21 / 2020
-                  // date: Weather.getCurDateTime('DMY'),
-                  // -- Monday, Tuesday, Wednesday ...
-                  day: Weather.getDayOfWeek(),
-                  // timesLine: weather.getTimeList(),
-                  // -- ["00:00","03:00","06:00"...]
-                  hourly: Weather.getWeatherHourly(item.dt_txt),
-                  // -- get middle item of hourly array
-                  middle: Weather.getMiddle(item.dt_txt),
-                };
-                // -- jump to the next date in list
-                Weather.nextDate();
-                return obj;
-              },
-            );
+            const weatherList: Array<IWeatherList> = Weather.getDatesList().map((item: IHourly) => {
+              const obj: IWeatherList = {
+                // -- url of iamge
+                img: Weather.getIcon(),
+                // -- [min, max]
+                temp: Weather.getMinMaxTemp(),
+                // -- January, 21 / 2020
+                // date: Weather.getCurDateTime('DMY'),
+                // -- Monday, Tuesday, Wednesday ...
+                day: Weather.getDayOfWeek(),
+                // timesLine: weather.getTimeList(),
+                // -- ["00:00","03:00","06:00"...]
+                hourly: Weather.getWeatherHourly(item.dt_txt),
+                // -- get middle item of hourly array
+                middle: Weather.getMiddle(item.dt_txt),
+              };
+              // -- jump to the next date in list
+              Weather.nextDate();
+              return obj;
+            });
             let defaultDay = 0;
             // -- getting list of days [Monday, Tuesday, Wednesday ...] from dtatList array
             const days = weatherList.map(i => i.day.toLowerCase());
