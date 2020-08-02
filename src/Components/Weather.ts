@@ -1,42 +1,42 @@
-import { listInit, weatherDataInit } from '../Interface/initialData';
+import { hourlyInit, weatherDataInit } from '../Interface/initialData';
 import { IWeatherData } from '../Interface/Interface';
 
 
+const numberOfDaysInList:number = 5;
+const ZERO_KELVIN:number = 273;
+const FIRST:number = 0;
+const TIME_SHIFT:number = 8;
+
 class WeatherData {
-  _currentDay = 0;
+  _currentDay:number = 0;
 
-  _initialDay = 1;
+  _initialDay:number = 1;
 
-  _initialize = false;
+  _initialize:boolean = false;
 
   _data = weatherDataInit;
 
-  _listDateArray = listInit;
+  _listDateArray = hourlyInit;
 
   _firstDayTimeShift = 0;
 
-  _convertToC = (temp = 0) => Math.round(temp - 273);
+  _convertTempToC = (temp = 0) => Math.round(temp - ZERO_KELVIN);
 
-  _convertToF = (temp = 0) => Math.round(1.8 * (temp - 273) + 32);
+  // _convertToF = (temp = 0) => Math.round(1.8 * (temp - ZERO_KELVIN) + 32);
 
-  // F = 1.8 * (K-273) + 32;
-  // C = K - 273
+  // F = 1.8 * (K-ZERO_KELVIN) + 32;
+  // C = K - ZERO_KELVIN
   _reset() {
     this._currentDay = 0;
     this._initialDay = 1;
     this._initialize = false;
     this._data = weatherDataInit;
-    this._listDateArray = listInit;
+    this._listDateArray = hourlyInit;
     this._firstDayTimeShift = 0;
   }
 
   getShift() {
     return this._firstDayTimeShift;
-  }
-
-  getSize() {
-    if (this._initialize) return this._listDateArray.length;
-    return null;
   }
 
   getRain() {
@@ -60,18 +60,18 @@ class WeatherData {
 
   getTemperatures() {
     if (this._initialize) {
-      return this._data.list.map(i => Math.round(i.main.temp - 273));
+      return this._data.list.map(i => Math.round(i.main.temp - ZERO_KELVIN));
     }
     return [];
   }
 
   getIcon() {
     if (this._initialize) {
-      if (this._currentDay === 0) return this._listDateArray[this._currentDay].weather[0].icon;
+      if (this._currentDay === 0) return this._listDateArray[this._currentDay].weather[FIRST].icon;
       const date = this._listDateArray[this._currentDay].dt_txt;
       const newArr = this.getWeatherHourly(date);
       const middleItem = Math.floor(newArr.length / 2);
-      const img = newArr[middleItem].weather[0].icon;
+      const img = newArr[middleItem].weather[FIRST].icon;
       return img;
     }
     return '';
@@ -100,9 +100,9 @@ class WeatherData {
       const midElement = hourlyArray[n];
       midlleObj.wind = midElement.wind.speed;
       midlleObj.pop = Math.round(midElement.pop * 100);
-      midlleObj.description = midElement.weather[0].description;
-      midlleObj.temp = Math.round(midElement.main.temp - 273);
-      midlleObj.img = midElement.weather[0].icon;
+      midlleObj.description = midElement.weather[FIRST].description;
+      midlleObj.temp = Math.round(midElement.main.temp - ZERO_KELVIN);
+      midlleObj.img = midElement.weather[FIRST].icon;
       midlleObj.hum = midElement.main.humidity;
     }
     return midlleObj;
@@ -114,19 +114,17 @@ class WeatherData {
       const dateNow = new Date().getDate();
       const initialDay = new Date(date).getDate();
       this._data.list.forEach(item => {
-        const curDay = new Date(item.dt_txt).getDate();
-        if (curDay === initialDay) {
+        const currrentDay = new Date(item.dt_txt).getDate();
+        if (currrentDay === initialDay) {
           hoursArr.push(item);
         }
       });
       const len = hoursArr.length;
-      // -- fill hoursArr with next data if length < 8 and if day === current day
-      if (!isfull && initialDay === dateNow && hoursArr.length < 8) {
+      // -- fill hoursArr with next data if length < TIME_SHIFT and if day === current day
+      if (!isfull && initialDay === dateNow && hoursArr.length < TIME_SHIFT) {
         // -- create time shift number in first day
-        // -- which must have not an 8 parts in time line (24/3 = 8)
         this._firstDayTimeShift = len;
-        for (let i = 0; i < 8 - len; i++) {
-          // -- add some time elements, which`s need to be 8
+        for (let i = 0; i < TIME_SHIFT - len; i++) {
           hoursArr.push(this._data.list[len + i]);
         }
       }
@@ -134,29 +132,29 @@ class WeatherData {
     return hoursArr;
   }
 
-  getMinMaxTemp(option = 'C') {
+  getMinMaxTemp() {
     if (this._initialize) {
       const temps: number[] = [];
-      const convTempFunc = option === 'F' ? this._convertToF : this._convertToC;
       this._data.list.forEach(item => {
         const d = new Date(item.dt_txt).getDate();
         const mon = new Date(item.dt_txt).getMonth();
         const year = new Date(item.dt_txt).getFullYear();
         const d1 = new Date(year, mon, this._initialDay + this._currentDay).getDate();
         if (d === d1) {
-          temps.push(convTempFunc(item.main.temp));
-        }
+          temps.push(this._convertTempToC(item.main.temp));
+        }  
       });
       return [Math.min(...temps), Math.max(...temps)];
     }
     return [0, 0];
   }
 
-  getDateArray5() {
-    return this._listDateArray.slice(0, 5);
+  getDatesList() {
+      return this._listDateArray;
   }
 
   init(data: any) {
+    this._initialize = false;
     if (typeof data.list === 'object') {
       this._reset();
       this._data = data;
@@ -164,26 +162,23 @@ class WeatherData {
       const stringDate = new Date(this._data.list[0].dt_txt);
       this._initialDay = stringDate.getDate();
       this._listDateArray = this._data.list.filter(item => {
-        const dt = new Date(item.dt_txt);
-        if (dt.getDate() !== firstDay) {
-          firstDay = dt.getDate();
+        const dt = new Date(item.dt_txt).getDate();
+        if (dt !== firstDay) {
+          firstDay = dt
           return true;
         }
         return false;
       });
       if (typeof this._listDateArray === 'object') {
-        // -- delet last elements from array. Need to be 5 alements
-        this._listDateArray = this._listDateArray.slice(0, 5);
-        // -- initialized
+        this._listDateArray = this._listDateArray.slice(0, numberOfDaysInList);
         this._initialize = true;
-      } else this._initialize = false;
-    } else this._initialize = false;
-    // -- not initialized
+      } 
+    } 
     return this._initialize;
   }
 
   nextDate() {
-    if (this._initialize && this._currentDay < 5) {
+    if (this._initialize && this._currentDay < numberOfDaysInList) {
       this._currentDay++;
       return true;
     }

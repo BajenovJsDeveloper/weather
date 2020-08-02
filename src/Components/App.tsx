@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 import '../main.scss';
 import axios from 'axios';
@@ -9,7 +9,9 @@ import Grafic from './Grafic';
 import Hourly from './Hourly';
 import loadingSpin from '../img/Rolling-1s-200px.png';
 import Mycontext from './MyContext';
-import { initialData, dataInit } from '../Interface/initialData';
+import { dataInit } from '../Interface/initialData';
+//-- will be deleted after all tests
+// import { initialData } from '../Interface/dateGenerator';
 import {
   IButtonsNavProps,
   IdayDiscr,
@@ -24,7 +26,6 @@ import {
   IObj,
   IContextProps,
   IObjGrafic,
-
 } from '../Interface/Interface';
 
 const graficInit: IObjGrafic = {
@@ -51,7 +52,8 @@ const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
   return (
     <>
       {buttonsNames.map((btn:string,idx:number) => (<button 
-        name={btn} 
+        name={btn}
+        key={btn} 
         disabled={activeButton === btn ? true : false} 
         onClick={() => btnClick(idx)}>
               { buttonsHtmlText[idx] }
@@ -95,7 +97,7 @@ const WeatherGrafic: React.FC<IWeatherGraficProps> = React.memo((props: IWeather
   const ref: React.RefObject<Rref> = React.createRef();
 
   useEffect(() => {
-    Grafic.init(600, 130, 5, ref.current, graficId);
+    Grafic.init(ref.current, graficId);
     Grafic.draw(graficArray.arr);
   }, [graficArray.arr, graficId, ref]);
 
@@ -363,13 +365,13 @@ function App(props: any) {
             // Weather.init(initialData);
             // -- getting array of 5 elements by sequance with  date and weather
             // -- [{date:..., },{date + 1:..., },...]
-            const weatherList: Array<IWeatherList> = Weather.getDateArray5().map(
-              (item: IHourly) => {
+            const weatherList: Array<IWeatherList> = Weather.getDatesList().map(
+              (item:IHourly) => {
                 const obj: IWeatherList = {
                   // -- url of iamge
                   img: Weather.getIcon(),
                   // -- [min, max]
-                  temp: Weather.getMinMaxTemp('C'),
+                  temp: Weather.getMinMaxTemp(),
                   // -- January, 21 / 2020
                   // date: Weather.getCurDateTime('DMY'),
                   // -- Monday, Tuesday, Wednesday ...
