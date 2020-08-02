@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-// import PropTypes from 'prop-types';
 
 import '../main.scss';
 import axios from 'axios';
@@ -9,31 +8,31 @@ import Grafic from './Grafic';
 import Hourly from './Hourly';
 import loadingSpin from '../img/Rolling-1s-200px.png';
 import Mycontext from './MyContext';
-import { dataInit } from '../Interface/initialData';
-//-- will be deleted after all tests
+import { DataInit } from '../Interface/initialData';
+// -- will be deleted after all tests
 // import { initialData } from '../Interface/dateGenerator';
 import {
-  IButtonsNavProps,
-  IdayDiscr,
-  IWeatherGraficProps,
+  ButtonsNavProps,
+  DayDiscr,
+  WeatherGraficProps,
   Rref,
-  IWeatherForDayProps,
-  IWeatherCardsProps,
-  IMainProps,
-  ITimeLineProps,
-  IHourly,
-  IWeatherList,
-  IObj,
-  IContextProps,
-  IObjGrafic,
+  WeatherForDayProps,
+  WeatherCardsProps,
+  MainProps,
+  TimeLineProps,
+  HourlyItem,
+  WeatherList,
+  Obj,
+  ContextProps,
+  ObjGrafic,
 } from '../Interface/Interfaces';
 
-const graficInit: IObjGrafic = {
+const graficInit: ObjGrafic = {
   arr: [0],
   tshift: 0,
 };
 
-const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
+const ButtonsNav: React.FC<ButtonsNavProps> = (props: ButtonsNavProps) => {
   const { hdlClickGrafic, butonId } = props;
   const namesObj = {
     temp: 'Temperature',
@@ -52,9 +51,10 @@ const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
     <>
       {buttonsNames.map((btn: string, idx: number) => (
         <button
+          type="button"
           name={btn}
           key={btn}
-          disabled={activeButton === btn ? true : false}
+          disabled={activeButton === btn}
           onClick={() => btnClick(idx)}
         >
           {buttonsHtmlText[idx]}
@@ -64,9 +64,12 @@ const ButtonsNav: React.FC<IButtonsNavProps> = (props: IButtonsNavProps) => {
   );
 };
 
-const WeatherDayDisc: React.FC<IdayDiscr> = (props: IdayDiscr) => {
+const WeatherDayDisc: React.FC<DayDiscr> = (props: DayDiscr) => {
   const { dayDiscr } = props;
   const value = useContext(Mycontext);
+  const handleDefault = () => {
+    // -- default
+  };
   return (
     <>
       <div className="mam-img">
@@ -84,7 +87,7 @@ const WeatherDayDisc: React.FC<IdayDiscr> = (props: IdayDiscr) => {
         <p>{`Humidity: ${dayDiscr.humidity}%`}</p>
         <p>{`Wind: ${dayDiscr.windSpeed}m/s`}</p>
         <ButtonsNav
-          hdlClickGrafic={value.hdlClickGrafic || function () {}}
+          hdlClickGrafic={value.hdlClickGrafic || handleDefault}
           butonId={value.graficId || 0}
         />
       </div>
@@ -92,7 +95,7 @@ const WeatherDayDisc: React.FC<IdayDiscr> = (props: IdayDiscr) => {
   );
 };
 
-const WeatherGrafic: React.FC<IWeatherGraficProps> = React.memo((props: IWeatherGraficProps) => {
+const WeatherGrafic: React.FC<WeatherGraficProps> = React.memo((props: WeatherGraficProps) => {
   const { graficArray, curItemId, graficId } = props;
   const ref: React.RefObject<Rref> = React.createRef();
 
@@ -112,7 +115,7 @@ const WeatherGrafic: React.FC<IWeatherGraficProps> = React.memo((props: IWeather
   );
 });
 
-const WeatherForDay: React.FC<IWeatherForDayProps> = React.memo((props: IWeatherForDayProps) => {
+const WeatherForDay: React.FC<WeatherForDayProps> = React.memo((props: WeatherForDayProps) => {
   const { dataList, curItemId, timeLineId } = props;
   const { graficArray = graficInit, graficId } = useContext(Mycontext);
 
@@ -141,11 +144,14 @@ const WeatherForDay: React.FC<IWeatherForDayProps> = React.memo((props: IWeather
   );
 });
 
-const WeatherCards: React.FC<IWeatherCardsProps> = React.memo((props: IWeatherCardsProps) => {
+const WeatherCards: React.FC<WeatherCardsProps> = React.memo((props: WeatherCardsProps) => {
   const { dataList, handleClick, curItemId = 0 } = props;
 
   const cardClick = (idx: number) => {
     if (handleClick) handleClick(idx);
+  };
+  const handleKeyPress = () => {
+    // -- some instructions
   };
 
   return (
@@ -154,7 +160,14 @@ const WeatherCards: React.FC<IWeatherCardsProps> = React.memo((props: IWeatherCa
         const active = curItemId === idx ? 'active' : '';
         const [tempMin, tempMax] = item.temp;
         return (
-          <div className={`card ${active}`} key={idx} onClick={() => cardClick(idx)}>
+          <div
+            role="button"
+            className={`card ${active}`}
+            key={item.day}
+            tabIndex={idx + 10}
+            onKeyPress={handleKeyPress}
+            onClick={() => cardClick(idx)}
+          >
             <p className="card-day">{item.day.slice(0, 3)}</p>
             <img
               src={`https://openweathermap.org/img/wn/${item.img}@2x.png`}
@@ -172,14 +185,14 @@ const WeatherCards: React.FC<IWeatherCardsProps> = React.memo((props: IWeatherCa
   );
 });
 
-const Loading: React.FC = props => (
+const Loading: React.FC = () => (
   <div className="mbl-loading">
     <img src={loadingSpin} alt="loading" className="loading" />
     <p>Loading data...</p>
   </div>
 );
 
-const Main: React.FC<IMainProps> = React.memo((props: IMainProps) => {
+const Main: React.FC<MainProps> = React.memo((props: MainProps) => {
   const { city, dataList, curItemId, time, loading, timeLineId } = props;
   const value = useContext(Mycontext);
   const urls = [
@@ -204,11 +217,11 @@ const Main: React.FC<IMainProps> = React.memo((props: IMainProps) => {
 
   useEffect(() => {
     if (!loading) {
-      //-- set description of timeline id
+      // -- set description of timeline id
       if (timeLineId !== null) {
         setDescription(Hourly.getDiscription(timeLineId));
       }
-      //-- set description defalut if curItemId is empty
+      // -- set description defalut if curItemId is empty
       else {
         setDescription(Hourly.getMiddleDescription(curItemId));
       }
@@ -264,7 +277,7 @@ const Main: React.FC<IMainProps> = React.memo((props: IMainProps) => {
   );
 });
 
-const TimeLine: React.FC<ITimeLineProps> = (props: ITimeLineProps) => {
+const TimeLine: React.FC<TimeLineProps> = (props: TimeLineProps) => {
   const { timeLine = [''], timeClick, timeLineId } = props;
   const len = timeLine.length - 1;
   let active = '';
@@ -273,13 +286,24 @@ const TimeLine: React.FC<ITimeLineProps> = (props: ITimeLineProps) => {
     if (timeClick) timeClick(id);
   };
 
+  const handleKeyPress = () => {
+    // -- some instructions
+  };
+
   return (
     <>
       {timeLine.map((i, id: number) => {
         if (timeLineId !== null && len < timeLineId) active = len === id ? 'active' : '';
         else active = timeLineId === id ? 'active' : '';
         return (
-          <div key={i} onClick={() => hdlTimeClick(id)} className={`mat-item ${active}`}>
+          <div
+            key={i}
+            role="button"
+            onClick={() => hdlTimeClick(id)}
+            tabIndex={id + 20}
+            onKeyPress={handleKeyPress}
+            className={`mat-item ${active}`}
+          >
             <span>{i}</span>
           </div>
         );
@@ -288,22 +312,21 @@ const TimeLine: React.FC<ITimeLineProps> = (props: ITimeLineProps) => {
   );
 };
 
-function getTimeStringNow(){
+function getTimeStringNow() {
   let newTime = '00';
-  let hours = new Date().getHours().toString(); 
-  if(!!String.prototype.padStart){
-    newTime = `${hours.padStart(2,'0')}:00`;
-  }
-  else{
-    hours = (hours.length <2) ? `0${hours}`: hours;
+  let hours = new Date().getHours().toString();
+  if (String.prototype.padStart) {
+    newTime = `${hours.padStart(2, '0')}:00`;
+  } else {
+    hours = hours.length < 2 ? `0${hours}` : hours;
     newTime = `${hours}:00`;
   }
   return newTime;
 }
 
-function App(props: any) {
+function App() {
   const [loading, setLoading] = useState(true);
-  const [dataList, setDataList] = useState(dataInit);
+  const [dataList, setDataList] = useState([new DataInit()]);
   const [city, setCity] = useState('');
   const [curItemId, setCurItemId] = useState(0);
   const [timeLine, setTimeLine] = useState(['']);
@@ -316,22 +339,21 @@ function App(props: any) {
   const calculateTime = function (i: { dt_txt: string }) {
     const newDate = new Date(i.dt_txt);
     let newTime = '00:00';
-    if(!!String.prototype.padStart){
-      let hours = newDate.getHours().toString().padStart(2,'0');
-      let minutes = newDate.getMinutes().toString().padStart(2,'0');
+    if (String.prototype.padStart) {
+      const hours = newDate.getHours().toString().padStart(2, '0');
+      const minutes = newDate.getMinutes().toString().padStart(2, '0');
       newTime = `${hours}:${minutes}`;
-    }
-    else{
+    } else {
       let hours = newDate.getHours().toString();
       let minutes = newDate.getMinutes().toString();
-      hours = (hours.length < 2)? `0${hours}`: hours;
-      minutes = (minutes.length < 2)? `0${minutes}`: minutes;
+      hours = hours.length < 2 ? `0${hours}` : hours;
+      minutes = minutes.length < 2 ? `0${minutes}` : minutes;
       newTime = `${hours}:${minutes}`;
     }
     return newTime;
   };
 
-  const handleClick = (itemId: number, shiftRight: boolean = false) => {
+  const handleClick = (itemId: number) => {
     setCurItemId(itemId);
     const newTimeLine = dataList[itemId].hourly.map(calculateTime);
     setTimeLine(newTimeLine);
@@ -341,7 +363,7 @@ function App(props: any) {
   };
 
   const hdlClickGrafic = (itemId: number) => {
-    const obj: IObj = { arr: [[0]], tshift: Weather.getShift() };
+    const obj: Obj = { arr: [[0]], tshift: Weather.getShift() };
     if (!loading) {
       switch (itemId) {
         case 0:
@@ -383,30 +405,32 @@ function App(props: any) {
           try {
             // --- initializng weather Class with some methods
             Weather.init(response.data);
-            //-- uncomite this line for test data from file
+            // -- uncomite this line for test data from file
             // Weather.init(initialData);
             // -- getting array of 5 elements by sequance with  date and weather
             // -- [{date:..., },{date + 1:..., },...]
-            const weatherList: Array<IWeatherList> = Weather.getDatesList().map((item: IHourly) => {
-              const obj: IWeatherList = {
-                // -- url of iamge
-                img: Weather.getIcon(),
-                // -- [min, max]
-                temp: Weather.getMinMaxTemp(),
-                // -- January, 21 / 2020
-                // date: Weather.getCurDateTime('DMY'),
-                // -- Monday, Tuesday, Wednesday ...
-                day: Weather.getDayOfWeek(),
-                // timesLine: weather.getTimeList(),
-                // -- ["00:00","03:00","06:00"...]
-                hourly: Weather.getWeatherHourly(item.dt_txt),
-                // -- get middle item of hourly array
-                middle: Weather.getMiddle(item.dt_txt),
-              };
-              // -- jump to the next date in list
-              Weather.nextDate();
-              return obj;
-            });
+            const weatherList: Array<WeatherList> = Weather.getDatesList().map(
+              (item: HourlyItem) => {
+                const obj: WeatherList = {
+                  // -- url of iamge
+                  img: Weather.getIcon(),
+                  // -- [min, max]
+                  temp: Weather.getMinMaxTemp(),
+                  // -- January, 21 / 2020
+                  // date: Weather.getCurDateTime('DMY'),
+                  // -- Monday, Tuesday, Wednesday ...
+                  day: Weather.getDayOfWeek(),
+                  // timesLine: weather.getTimeList(),
+                  // -- ["00:00","03:00","06:00"...]
+                  hourly: Weather.getWeatherHourly(item.dt_txt),
+                  // -- get middle item of hourly array
+                  middle: Weather.getMiddle(item.dt_txt),
+                };
+                // -- jump to the next date in list
+                Weather.nextDate();
+                return obj;
+              },
+            );
             let defaultDay = 0;
             // -- getting list of days [Monday, Tuesday, Wednesday ...] from dtatList array
             const days = weatherList.map(i => i.day.toLowerCase());
@@ -447,7 +471,7 @@ function App(props: any) {
       });
   }, [history]);
 
-  const contextValue: IContextProps = {
+  const contextValue: ContextProps = {
     graficArray: grafic,
     curItemId,
     handleClick,

@@ -1,17 +1,18 @@
 import { hourlyInit, weatherDataInit } from '../Interface/initialData';
-import { IWeatherData } from '../Interface/Interfaces';
+import { WeatherData, HourlyItem } from '../Interface/Interfaces';
 
-const numberOfDaysInList: number = 5;
-const ZERO_KELVIN: number = 273;
-const FIRST: number = 0;
-const TIME_SHIFT: number = 8;
+const numberOfDaysInList = 5;
+const ZERO_KELVIN = 273;
+const FIRST = 0;
+const TIME_SHIFT = 8;
+const FIRST_ITEM = 0;
 
-class WeatherData {
-  _currentDay: number = 0;
+class WeatherDataList implements WeatherData {
+  _currentDay = 0;
 
-  _initialDay: number = 1;
+  _initialDay = 1;
 
-  _initialize: boolean = false;
+  _initialize = false;
 
   _data = weatherDataInit;
 
@@ -19,12 +20,9 @@ class WeatherData {
 
   _firstDayTimeShift = 0;
 
+  // C = K - ZERO_KELVIN
   _convertTempToC = (temp = 0) => Math.round(temp - ZERO_KELVIN);
 
-  // _convertToF = (temp = 0) => Math.round(1.8 * (temp - ZERO_KELVIN) + 32);
-
-  // F = 1.8 * (K-ZERO_KELVIN) + 32;
-  // C = K - ZERO_KELVIN
   _reset() {
     this._currentDay = 0;
     this._initialDay = 1;
@@ -40,7 +38,7 @@ class WeatherData {
 
   getRain() {
     if (this._initialize) {
-      const resultArr = this._data.list.map(i => {
+      const resultArr = this._data.list.map((i: HourlyItem) => {
         const rain = i.rain ? i.rain['3h'] : 0;
         return [Math.round(i.pop * 100), rain];
       });
@@ -51,7 +49,7 @@ class WeatherData {
 
   getWind() {
     if (this._initialize) {
-      const resultArr = this._data.list.map(i => [i.wind.deg, i.wind.speed]);
+      const resultArr = this._data.list.map((i: HourlyItem) => [i.wind.deg, i.wind.speed]);
       return resultArr;
     }
     return [[0, 0]];
@@ -59,7 +57,7 @@ class WeatherData {
 
   getTemperatures() {
     if (this._initialize) {
-      return this._data.list.map(i => Math.round(i.main.temp - ZERO_KELVIN));
+      return this._data.list.map((i: HourlyItem) => Math.round(i.main.temp - ZERO_KELVIN));
     }
     return [];
   }
@@ -107,12 +105,12 @@ class WeatherData {
     return midlleObj;
   }
 
-  getWeatherHourly(date: string, isfull: boolean = false) {
+  getWeatherHourly(date: string, isfull = false) {
     const hoursArr = [];
     if (this._initialize) {
       const dateNow = new Date().getDate();
       const initialDay = new Date(date).getDate();
-      this._data.list.forEach(item => {
+      this._data.list.forEach((item: HourlyItem) => {
         const currrentDay = new Date(item.dt_txt).getDate();
         if (currrentDay === initialDay) {
           hoursArr.push(item);
@@ -123,7 +121,7 @@ class WeatherData {
       if (!isfull && initialDay === dateNow && hoursArr.length < TIME_SHIFT) {
         // -- create time shift number in first day
         this._firstDayTimeShift = len;
-        for (let i = 0; i < TIME_SHIFT - len; i++) {
+        for (let i = 0; i < TIME_SHIFT - len; i += 1) {
           hoursArr.push(this._data.list[len + i]);
         }
       }
@@ -133,8 +131,8 @@ class WeatherData {
 
   getMinMaxTemp() {
     if (this._initialize) {
-      const temps: number[] = [];
-      this._data.list.forEach(item => {
+      const temps: Array<number> = [];
+      this._data.list.forEach((item: HourlyItem) => {
         const d = new Date(item.dt_txt).getDate();
         const mon = new Date(item.dt_txt).getMonth();
         const year = new Date(item.dt_txt).getFullYear();
@@ -158,9 +156,9 @@ class WeatherData {
       this._reset();
       this._data = data;
       let firstDay = 0;
-      const stringDate = new Date(this._data.list[0].dt_txt);
+      const stringDate = new Date(this._data.list[FIRST_ITEM].dt_txt);
       this._initialDay = stringDate.getDate();
-      this._listDateArray = this._data.list.filter(item => {
+      this._listDateArray = this._data.list.filter((item: HourlyItem) => {
         const dt = new Date(item.dt_txt).getDate();
         if (dt !== firstDay) {
           firstDay = dt;
@@ -178,7 +176,7 @@ class WeatherData {
 
   nextDate() {
     if (this._initialize && this._currentDay < numberOfDaysInList) {
-      this._currentDay++;
+      this._currentDay += 1;
       return true;
     }
     return false;
@@ -187,11 +185,11 @@ class WeatherData {
   getDayOfWeek() {
     if (this._initialize) {
       const newDate = new Date(this._listDateArray[this._currentDay].dt_txt);
-      return newDate.toLocaleString('en-US', { weekday: 'long' });
+      return newDate.toLocaleString('en-GB', { weekday: 'long' });
     }
     return '';
   }
 }
 
-const Weather: IWeatherData = new WeatherData();
+const Weather: WeatherData = new WeatherDataList();
 export default Weather;

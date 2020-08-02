@@ -1,63 +1,63 @@
 import React from 'react';
 import { GraficTempWindPop } from '../Interface/Interfaces';
 
-const GRAF_TEMP: number = 0;
-const GRAF_RAIN: number = 1;
-const GRAF_WIND: number = 2;
-const SCALE_HEIGHT: number = 3;
-const SCALE_MEDIUM: number = 2;
-const SCALE_LOW: number = 1;
-const INITIAL_WIDTH: number = 600;
-const INITIAL_HEIGHT: number = 130;
-const INITIAL_LENGTH: number = 5;
-const INITIAL_SHIFT: number = 0;
-const NUMBER_OF_TIME_SHIFTS: number = 8;
-const ZERO_DEGREES: number = 0;
-const START_OFFSET: number = 0;
-const START_X: number = 0;
-const START_Y: number = 0;
-const FONT_SIZE: string = '12px';
-const LINE_COLOR_1: string = '#ffcc00';
-const FILL_COLOR_1: string = '#fff5cc';
-const FILL_COLOR_2: string = '#d2eaff';
-const FILL_COLOR_3: string = '#195bf7';
-const FILL_COLOR_4: string = '#3a3a3a';
-const FILL_COLOR_5: string = '#c6c6c6';
-const FILL_COLOR_GRAY: string = '#aaa';
-const COLR_BLUE: string = 'blue';
-const COLOR_RED: string = 'red';
-const COLOR_BLACK: string = 'black';
-const LINE_THIN: number = 1;
-const LINE_MEDIUM: number = 2;
-const LINE_BOLD: number = 4;
-const MARGIN_BOTTOM: number = 10;
-const M_BOTTOM_RAIN: number = 20;
-const M_BOTTOM_POP: number = 5;
-const M_ABOVE_LINE: number = 1;
-const M_BOTTOM_WIND: number = 30;
-const TEMP_HOT: number = 31;
-const TEMP_COLD: number = 0;
-const ZONE_WARM: number = 30;
-const ZONE_HOT: number = 45;
-const ZONE_ZERO: number = 0;
-const ZONE_COLD: number = -30;
-const CIRCLE_DEGREE: number = 360;
-const CIRCLE_DEGREE_HALF: number = 180;
+const GRAF_TEMP = 0;
+const GRAF_RAIN = 1;
+const GRAF_WIND = 2;
+const SCALE_HEIGHT = 3;
+const SCALE_MEDIUM = 2;
+const SCALE_LOW = 1;
+const INITIAL_WIDTH = 600;
+const INITIAL_HEIGHT = 130;
+const INITIAL_LENGTH = 5;
+const INITIAL_SHIFT = 0;
+const NUMBER_OF_TIME_SHIFTS = 8;
+const ZERO_DEGREES = 0;
+const START_OFFSET = 0;
+const START_X = 0;
+const START_Y = 0;
+const FONT_SIZE = '12px';
+const LINE_COLOR_1 = '#ffcc00';
+const FILL_COLOR_1 = '#fff5cc';
+const FILL_COLOR_2 = '#d2eaff';
+const FILL_COLOR_3 = '#195bf7';
+const FILL_COLOR_4 = '#3a3a3a';
+const FILL_COLOR_5 = '#c6c6c6';
+const FILL_COLOR_GRAY = '#aaa';
+const COLR_BLUE = 'blue';
+const COLOR_RED = 'red';
+const COLOR_BLACK = 'black';
+const LINE_THIN = 1;
+const LINE_MEDIUM = 2;
+const LINE_BOLD = 4;
+const MARGIN_BOTTOM = 10;
+const M_BOTTOM_RAIN = 20;
+const M_BOTTOM_POP = 5;
+const M_ABOVE_LINE = 1;
+const M_BOTTOM_WIND = 30;
+const TEMP_HOT = 31;
+const TEMP_COLD = 0;
+const ZONE_WARM = 30;
+const ZONE_HOT = 45;
+const ZONE_ZERO = 0;
+const ZONE_COLD = -30;
+const CIRCLE_DEGREE = 360;
+const CIRCLE_DEGREE_HALF = 180;
 
 class GraficsTWP implements GraficTempWindPop {
-  _width: number = 0;
+  _width = 0;
 
-  _height: number = 0;
+  _height = 0;
 
   _elem: any;
 
-  _shift: number = 0;
+  _shift = 0;
 
-  _k: number = 0;
+  _k = 0;
 
-  _grafId: number = 0;
+  _grafId = 0;
 
-  _len: number = 0;
+  _len = 0;
 
   init(elem: React.RefObject<HTMLCanvasElement> | null, grafId = GRAF_TEMP): void {
     this._width = INITIAL_WIDTH;
@@ -85,6 +85,7 @@ class GraficsTWP implements GraficTempWindPop {
       this._elem.style = `left:${shiftX}px`;
     }
   }
+
   _DrawTemperaturesGrafic(arr: Array<Array<number>> | Array<number>, ctx: any) {
     const [k, height] = [this._k, this._height];
     let offsetX: number = k;
@@ -124,7 +125,7 @@ class GraficsTWP implements GraficTempWindPop {
     // -- draw temperatures
     ctx.textAlign = 'center';
     offsetX = k;
-    arr1.forEach((x: number, idx: number) => {
+    arr1.forEach((x: number) => {
       ctx.beginPath();
       if (x <= TEMP_COLD) ctx.fillStyle = COLR_BLUE;
       else if (x > TEMP_HOT) ctx.fillStyle = COLOR_RED;
@@ -171,6 +172,7 @@ class GraficsTWP implements GraficTempWindPop {
       offsetX += k;
     });
   }
+
   _DrawWindSpeedDirectionGrafic(arr: Array<Array<number>> | Array<number>, ctx: any) {
     let offsetX = START_OFFSET;
     const [k, height] = [this._k, this._height];
@@ -228,7 +230,6 @@ class GraficsTWP implements GraficTempWindPop {
     }
     return false;
   }
-  
 }
 // -- grafics Temperature, Wind, Precipitations
 const Grafic: GraficTempWindPop = new GraficsTWP();

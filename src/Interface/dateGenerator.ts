@@ -13,7 +13,7 @@ const TIME_POINT = 21;
 const TIME_SHIFT = 3;
 const ZERO_KELVIN = 273;
 
-interface IDateProps {
+interface DateProps {
   day: number;
   mon: number;
   year: number;
@@ -21,7 +21,7 @@ interface IDateProps {
   len: number;
 }
 
-export function dateGenerator<IDateProps>(
+export function dateGenerator<DateProps>(
   day: number,
   mon: number,
   year: number,
@@ -31,7 +31,7 @@ export function dateGenerator<IDateProps>(
   const result = [];
   let h = hour;
   let cnt = 0;
-  for (let i = 0; i < len; i++) {
+  for (let i = 0; i < len; i += 1) {
     const obj1 = {
       main: {
         temp: random(TEMPERATURE, SHIFT) + ZERO_KELVIN,
@@ -56,7 +56,7 @@ export function dateGenerator<IDateProps>(
     result.push(obj1);
     if (h >= TIME_POINT) {
       h = 0;
-      cnt++;
+      cnt += 1;
     } else h += TIME_SHIFT;
   }
   return result;
@@ -66,5 +66,5 @@ export const initialData = {
   city: {
     name: 'Chishimnau',
   },
-  list: dateGenerator<IDateProps>(28, 7, 2020, 12, 40),
+  list: dateGenerator<DateProps>(28, 7, 2020, 12, 40),
 };

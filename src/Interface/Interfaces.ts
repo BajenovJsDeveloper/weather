@@ -1,9 +1,29 @@
-import { dataInit } from './initialData';
+// import { DataInit } from './initialData';
 
-export interface GraficTempWindPop{
+// const initialDataList = [new DataInit()];
+
+export interface HourlyList {
+  id: number;
+  _list: {};
+  _init: boolean;
+  init(listTable: Array<WeatherList>, id: number): void;
+  _getListArr(func: any, id: number): any;
+  getWeekDay(): string | null;
+  getTArray(): Array<number>;
+  getCurImg(id: number): string | null;
+  getHumidity(id: number): number | null;
+  getMaxTemp(id: number): number | null;
+  getWindSpeed(id: number): number | null;
+  getDiscription(id: number): string;
+  getMiddleDescription(itemId: number): string;
+  getRain(id: number): string | null;
+  getPop(id: number): number | null;
+}
+
+export interface GraficTempWindPop {
   _elem: React.RefObject<HTMLCanvasElement>;
   _width: number;
-  _shift: number; 
+  _shift: number;
   _k: number;
   _grafId: number;
   _len: number;
@@ -15,12 +35,13 @@ export interface GraficTempWindPop{
   _DrawPrecipitationsGrafic(arr: Array<Array<number>> | Array<number>, ctx: any): void;
 }
 
-interface IList_Item {
+export interface ListItem {
+  main: { temp: number };
   dt_txt: string;
   weather: Array<{ description: string }>;
 }
 
-export interface ImiddleObj {
+export interface MiddleObj {
   wind: number;
   pop: number;
   description: string;
@@ -29,11 +50,11 @@ export interface ImiddleObj {
   hum: number;
 }
 
-export interface IWeatherData {
+export interface WeatherData {
   _currentDay: number;
   _initialDay: number;
   _initialize: boolean;
-  _data: IWeatherDataInit;
+  _data: WeatherDataInit;
   _listDateArray: any;
   _firstDayTimeShift: number;
   _convertTempToC: (temp: number) => number;
@@ -43,33 +64,33 @@ export interface IWeatherData {
   getTemperatures: () => Array<number>;
   getIcon: () => string;
   getCity: () => string;
-  getMiddle: (date: string) => ImiddleObj;
-  getWeatherHourly(date: string, isfull?: boolean): Array<IList_Item>;
+  getMiddle: (date: string) => MiddleObj;
+  getWeatherHourly(date: string, isfull?: boolean): Array<ListItem>;
   getMinMaxTemp(): number[];
-  getDatesList: () => IHourly[];
+  getDatesList: () => Array<HourlyItem>;
   init(data: any): boolean;
   nextDate(): boolean;
   getDayOfWeek(): string;
 }
 
-export interface IButtonsNavProps {
+export interface ButtonsNavProps {
   butonId: number;
   hdlClickGrafic: (id: number) => void;
 }
 
-export interface IdayDiscr {
+export interface DayDiscr {
   dayDiscr: {
     weekDay: string | null;
     humidity: number | null;
     temperature: number | null;
     windSpeed: number | null;
     curTimeWeatherImg: string | null;
-    pop: number[] | null;
+    pop: number | null;
   };
 }
 
-export interface IWeatherGraficProps {
-  graficArray: IObjGrafic;
+export interface WeatherGraficProps {
+  graficArray: ObjGrafic;
   curItemId: number;
   graficId: number | undefined;
 }
@@ -80,62 +101,78 @@ export interface Rref extends HTMLCanvasElement {
   height: number;
 }
 
-export interface IWeatherForDayProps {
-  dataList: typeof dataInit;
+export interface WeatherForDayProps {
+  dataList: Array<WeatherList>;
   curItemId: number;
   timeLineId: number | null;
 }
 
-export interface IWeatherCardsProps {
-  dataList: typeof dataInit;
+export interface WeatherCardsProps {
+  dataList: Array<WeatherList>;
   handleClick: ((idx: number) => void) | undefined;
   curItemId: number | undefined;
 }
 
-export interface IMainProps {
+export interface MainProps {
   city: string;
-  dataList: typeof dataInit;
+  dataList: Array<WeatherList>;
   curItemId: number;
   time: string;
   loading: boolean;
   timeLineId: number | null;
 }
 
-export interface ITimeLineProps {
+export interface TimeLineProps {
   timeLine: Array<string> | undefined;
   timeClick: ((id: number) => void) | undefined;
   timeLineId: number | null;
 }
 
-export interface IHourly {
-  main: { temp: number; humidity: number };
-  wind: { deg: number; speed: number };
-  rain: { '3h': number };
+export interface HourlyItem {
+  main: {
+    temp: number;
+    humidity: number;
+  };
+  wind: {
+    deg: number;
+    speed: number;
+  };
+  rain: {
+    '3h': number;
+  };
   pop: number;
   dt_txt: string;
-  weather: Array<{ description: string; icon: string }>;
+  weather: Array<{
+    description: string;
+    icon: string;
+  }>;
 }
 
-export interface IWeatherList {
+export interface WeatherList {
   img: string;
-  temp: number[];
+  temp: Array<number>;
   day: string;
-  middle: ImiddleObj;
-  hourly: Array<{ dt_txt: string; weather: Array<{ description: string }> }>;
+  middle: MiddleObj;
+  hourly: Array<{
+    main: {
+      temp: number;
+    };
+    dt_txt: string;
+    weather: Array<{
+      description: string;
+    }>;
+  }>;
 }
 
-export interface IObj {
-  arr: number[] | number[][];
-  tshift: number;
-}
+export type Obj = ObjGrafic;
 
-export interface IObjGrafic {
+export interface ObjGrafic {
   arr: Array<Array<number>> | Array<number>;
   tshift: number;
 }
 
-export interface IContextProps {
-  graficArray: IObjGrafic;
+export interface ContextProps {
+  graficArray: ObjGrafic;
   curItemId: number;
   handleClick: (id: number) => void;
   timeClick: (id: number) => void;
@@ -145,9 +182,9 @@ export interface IContextProps {
   hdlClickGrafic: (id: number) => void;
 }
 
-export interface IWeatherDataInit {
+export interface WeatherDataInit {
   city: {
     name: string;
   };
-  list: IHourly[];
+  list: Array<HourlyItem>;
 }

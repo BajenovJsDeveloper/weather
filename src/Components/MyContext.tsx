@@ -1,5 +1,5 @@
 import React from 'react';
-import { IContextProps } from '../Interface/Interfaces';
+import { ContextProps } from '../Interface/Interfaces';
 
-const Mycontext = React.createContext<Partial<IContextProps>>({} as IContextProps);
+const Mycontext = React.createContext<Partial<ContextProps>>({} as ContextProps);
 export default Mycontext;

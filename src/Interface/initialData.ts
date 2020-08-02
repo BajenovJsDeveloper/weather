@@ -1,12 +1,25 @@
-import { IWeatherList, IHourly, IWeatherDataInit } from './Interfaces';
+import { WeatherList, HourlyItem, WeatherDataInit, ListItem, MiddleObj } from './Interfaces';
 
-export const dataInit: IWeatherList[] = [
-  {
-    temp: [0, 0],
-    img: '',
-    day: 'monday',
-    hourly: [
+export class DataInit implements WeatherList {
+  temp: Array<number> = [];
+
+  img = '';
+
+  day = '';
+
+  hourly: Array<ListItem>;
+
+  middle: MiddleObj;
+
+  constructor() {
+    this.temp = [0, 0];
+    this.img = '';
+    this.day = 'monday';
+    this.hourly = [
       {
+        main: {
+          temp: 0,
+        },
         dt_txt: '',
         weather: [
           {
@@ -14,19 +27,19 @@ export const dataInit: IWeatherList[] = [
           },
         ],
       },
-    ],
-    middle: {
+    ];
+    this.middle = {
       pop: 0,
       wind: 0,
       description: '',
       temp: 0,
       img: '',
       hum: 0,
-    },
-  },
-];
+    };
+  }
+}
 
-export const hourlyInit: IHourly[] = [
+export const hourlyInit: Array<HourlyItem> = [
   {
     main: {
       temp: 0,
@@ -50,7 +63,7 @@ export const hourlyInit: IHourly[] = [
   },
 ];
 
-export const weatherDataInit: IWeatherDataInit = {
+export const weatherDataInit: WeatherDataInit = {
   city: {
     name: '',
   },

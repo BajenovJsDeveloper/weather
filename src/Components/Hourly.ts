@@ -1,27 +1,22 @@
-class HourlyList {
+import { HourlyList, WeatherList } from '../Interface/Interfaces';
+import { DataInit } from '../Interface/initialData';
+
+const ZERO_KELVIN = 273;
+
+class HourlyListCards implements HourlyList {
   id = 0;
 
-  _list = [
-    {
-      day: '',
-      hourly: [{ main: { temp: 0, humidity: 0 } }],
-      middle: {
-        description: '',
-      },
-    },
-  ];
-
-  _hoCuItem = null;
+  _list: Array<WeatherList> = [new DataInit()];
 
   _init = false;
 
-  init(listTable: any, id = 0) {
+  init(listTable: Array<WeatherList>, id = 0) {
     this._list = listTable;
     this.id = id;
     // this._hoCuItem = null;
     this._init = false;
     if (typeof listTable === 'object') {
-      [this._hoCuItem] = listTable[id].hourly;
+      // [this._hoCuItem] = listTable[id].hourly;
       this._init = listTable[id].hourly.length >= 0;
     }
   }
@@ -43,7 +38,7 @@ class HourlyList {
 
   getTArray() {
     if (this._init) {
-      return this._list[this.id].hourly.map(i => Math.round(i.main.temp - 273));
+      return this._list[this.id].hourly.map(i => Math.round(i.main.temp - ZERO_KELVIN));
     }
     return [];
   }
@@ -67,7 +62,7 @@ class HourlyList {
   getMaxTemp(id: number) {
     if (this._init) {
       const temp: number = this._getListArr((i: any) => i.main.temp, id);
-      return Math.round(temp - 273);
+      return Math.round(temp - ZERO_KELVIN);
     }
     return null;
   }
@@ -114,5 +109,5 @@ class HourlyList {
     return null;
   }
 }
-const Hourly = new HourlyList();
+const Hourly: HourlyList = new HourlyListCards();
 export default Hourly;
