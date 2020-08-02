@@ -288,6 +288,19 @@ const TimeLine: React.FC<ITimeLineProps> = (props: ITimeLineProps) => {
   );
 };
 
+function getTimeStringNow(){
+  let newTime = '00';
+  let hours = new Date().getHours().toString(); 
+  if(!!String.prototype.padStart){
+    newTime = `${hours.padStart(2,'0')}:00`;
+  }
+  else{
+    hours = (hours.length <2) ? `0${hours}`: hours;
+    newTime = `${hours}:00`;
+  }
+  return newTime;
+}
+
 function App(props: any) {
   const [loading, setLoading] = useState(true);
   const [dataList, setDataList] = useState(dataInit);
@@ -297,14 +310,25 @@ function App(props: any) {
   const [grafic, setGrafic] = useState(graficInit);
   const [timeLineId, setTimelineId] = useState<number | null>(0);
   const [graficId, setGraficId] = useState(0);
-
-  const opt = { minute: '2-digit', hour: '2-digit', hour12: false };
-  const opt1 = { hour: '2-digit', hour12: false };
-  const currentTime = `${new Date().toLocaleTimeString('en-US', opt1)}:00`;
+  const currentTime = getTimeStringNow();
   const history = useHistory();
 
   const calculateTime = function (i: { dt_txt: string }) {
-    return new Date(i.dt_txt).toLocaleString('en-US', opt);
+    const newDate = new Date(i.dt_txt);
+    let newTime = '00:00';
+    if(!!String.prototype.padStart){
+      let hours = newDate.getHours().toString().padStart(2,'0');
+      let minutes = newDate.getMinutes().toString().padStart(2,'0');
+      newTime = `${hours}:${minutes}`;
+    }
+    else{
+      let hours = newDate.getHours().toString();
+      let minutes = newDate.getMinutes().toString();
+      hours = (hours.length < 2)? `0${hours}`: hours;
+      minutes = (minutes.length < 2)? `0${minutes}`: minutes;
+      newTime = `${hours}:${minutes}`;
+    }
+    return newTime;
   };
 
   const handleClick = (itemId: number, shiftRight: boolean = false) => {
